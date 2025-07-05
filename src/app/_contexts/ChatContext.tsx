@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { useSession } from 'next-auth/react';
 import { Character } from '@/lib/types';
 
 export interface Message {
@@ -10,160 +11,34 @@ export interface Message {
   timestamp: Date;
 }
 
-// Convert our message format to Gemini API format
-interface GeminiMessage {
-  id: string;
-  role: 'user' | 'model';
-  parts: Array<{
-    text: string;
-  }>;
-  timestamp: Date;
-}
-
 interface ChatState {
   messages: Message[];
   isLoading: boolean;
   error: string | null;
+  sessionId: string | null;
 }
 
 interface ChatContextType {
   chatState: ChatState;
   sendMessage: (text: string, character: Character) => Promise<void>;
   clearChat: () => void;
-  initializeChat: (characterId: string) => void;
+  initializeChat: (characterId: string, sessionId?: string) => Promise<void>;
+  loadChatSession: (sessionId: string) => Promise<void>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-// Local storage utilities
-const STORAGE_KEY = 'character-ai-chats';
-
-const saveToStorage = (chatStates: Record<string, ChatState>) => {
-  try {
-    // Convert dates to strings for storage
-    const serializedStates = Object.entries(chatStates).reduce((acc, [key, state]) => {
-      acc[key] = {
-        ...state,
-        messages: state.messages.map(msg => ({
-          ...msg,
-          timestamp: msg.timestamp.toISOString(),
-        })),
-      };
-      return acc;
-    }, {} as Record<string, {
-      messages: Array<{
-        id: string;
-        author: 'user' | 'character';
-        text: string;
-        timestamp: string;
-      }>;
-      isLoading: boolean;
-      error: string | null;
-    }>);
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedStates));
-  } catch (error) {
-    console.error('Failed to save chat history:', error);
-  }
-};
-
-const loadFromStorage = (): Record<string, ChatState> => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return {};
-    
-    const parsed = JSON.parse(stored);
-    const result: Record<string, ChatState> = {};
-    
-    // Convert string dates back to Date objects
-    for (const [key, state] of Object.entries(parsed)) {
-      const chatState = state as {
-        messages: Array<{
-          id: string;
-          author: 'user' | 'character';
-          text: string;
-          timestamp: string;
-        }>;
-        isLoading: boolean;
-        error: string | null;
-      };
-      
-      result[key] = {
-        ...chatState,
-        messages: chatState.messages.map((msg) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp),
-        })),
-      };
-    }
-    
-    return result;
-  } catch (error) {
-    console.error('Failed to load chat history:', error);
-    return {};
-  }
-};
-
-// Convert our message format to Gemini API format
-const convertToGeminiFormat = (messages: Message[]): GeminiMessage[] => {
-  return messages.map(msg => ({
-    id: msg.id,
-    role: msg.author === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.text }],
-    timestamp: msg.timestamp,
-  }));
-};
-
-// API call to backend
-const callChatAPI = async (characterId: string, chatHistory: GeminiMessage[]): Promise<string> => {
-  const response = await fetch('/api/chat', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      characterId,
-      chatHistory,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || `HTTP error! status: ${response.status}`);
-  }
-
-  if (!data.success) {
-    throw new Error(data.error || 'Failed to get response from API');
-  }
-
-  return data.reply;
-};
-
 export function ChatProvider({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
   const [chatStates, setChatStates] = useState<Record<string, ChatState>>({});
   const [currentCharacterId, setCurrentCharacterId] = useState<string>('');
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  // Load chat history from localStorage on mount
-  useEffect(() => {
-    const savedStates = loadFromStorage();
-    setChatStates(savedStates);
-    setIsHydrated(true);
-  }, []);
-
-  // Save to localStorage whenever chatStates changes
-  useEffect(() => {
-    if (isHydrated) {
-      saveToStorage(chatStates);
-    }
-  }, [chatStates, isHydrated]);
 
   const getCurrentChatState = useCallback((): ChatState => {
     return chatStates[currentCharacterId] || {
       messages: [],
       isLoading: false,
       error: null,
+      sessionId: null,
     };
   }, [chatStates, currentCharacterId]);
 
@@ -174,27 +49,91 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         messages: [],
         isLoading: false,
         error: null,
+        sessionId: null,
       })
     }));
   }, []);
 
-  const initializeChat = useCallback((characterId: string) => {
+  const loadChatSession = useCallback(async (sessionId: string) => {
+    if (status !== 'authenticated' || !session?.user) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/chats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      }
+
+      if (data.success && data.session) {
+        const characterId = data.session.characterId;
+        setCurrentCharacterId(characterId);
+
+        // Convert database messages to our format
+        const messages: Message[] = data.session.messages.map((msg: { id: string; role: string; content: string; createdAt: string }) => ({
+          id: msg.id,
+          author: msg.role === 'user' ? 'user' : 'character',
+          text: msg.content,
+          timestamp: new Date(msg.createdAt),
+        }));
+
+        updateChatState(characterId, prev => ({
+          ...prev,
+          messages,
+          sessionId: data.session.id,
+          isLoading: false,
+          error: null,
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to load chat session:', error);
+      updateChatState(currentCharacterId, prev => ({
+        ...prev,
+        error: 'Failed to load chat session',
+        isLoading: false,
+      }));
+    }
+  }, [session, status, updateChatState, currentCharacterId]);
+
+  const initializeChat = useCallback(async (characterId: string, sessionId?: string) => {
     setCurrentCharacterId(characterId);
     
-    // Don't add initial message here - let the backend handle greetings
-    // Just ensure the chat state exists
-    if (!chatStates[characterId]) {
+    if (sessionId) {
+      // Load existing session
+      await loadChatSession(sessionId);
+    } else {
+      // Initialize empty chat for new session
       updateChatState(characterId, prev => ({
         ...prev,
         messages: [],
         isLoading: false,
         error: null,
+        sessionId: null,
       }));
     }
-  }, [chatStates, updateChatState]);
+  }, [updateChatState, loadChatSession]);
 
   const sendMessage = useCallback(async (text: string, character: Character) => {
     if (!text.trim()) return;
+
+    // Check if user is authenticated
+    if (status !== 'authenticated' || !session?.user) {
+      updateChatState(character.id, prev => ({
+        ...prev,
+        error: 'Please sign in to start chatting',
+        isLoading: false,
+      }));
+      return;
+    }
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
@@ -212,31 +151,45 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }));
 
     try {
-      // Get current chat history including the new user message
-      const currentState = chatStates[character.id] || { messages: [], isLoading: false, error: null };
-      const allMessages = [...currentState.messages, userMessage];
-      
-      // Convert to Gemini format for API call
-      const geminiHistory = convertToGeminiFormat(allMessages);
+      const currentState = chatStates[character.id];
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          characterId: character.id,
+          message: text.trim(),
+          sessionId: currentState?.sessionId || undefined,
+        }),
+      });
 
-      // Call the API
-      const reply = await callChatAPI(character.id, geminiHistory);
+      const data = await response.json();
 
-      // Create AI response message
-      const aiMessage: Message = {
-        id: `ai-${Date.now()}`,
-        author: 'character',
-        text: reply,
-        timestamp: new Date(),
-      };
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      }
 
-      // Update state with AI response
-      updateChatState(character.id, prev => ({
-        ...prev,
-        messages: [...prev.messages, aiMessage],
-        isLoading: false,
-        error: null,
-      }));
+      if (data.success) {
+        // Create AI response message
+        const aiMessage: Message = {
+          id: data.messageId || `ai-${Date.now()}`,
+          author: 'character',
+          text: data.reply,
+          timestamp: new Date(),
+        };
+
+        // Update state with AI response and session ID
+        updateChatState(character.id, prev => ({
+          ...prev,
+          messages: [...prev.messages, aiMessage],
+          sessionId: data.sessionId,
+          isLoading: false,
+          error: null,
+        }));
+      } else {
+        throw new Error(data.error || 'Failed to get response from API');
+      }
 
     } catch (error) {
       console.error('Chat API error:', error);
@@ -244,7 +197,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       let errorMessage = 'Failed to send message. Please try again.';
       
       if (error instanceof Error) {
-        if (error.message.includes('Gemini API key not configured')) {
+        if (error.message.includes('Authentication required')) {
+          errorMessage = 'Please sign in to continue chatting.';
+        } else if (error.message.includes('Gemini API key not configured')) {
           errorMessage = 'API key not configured. Please check the setup guide.';
         } else if (error.message.includes('Character not found')) {
           errorMessage = 'Character not found. Please try a different character.';
@@ -261,7 +216,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         error: errorMessage,
       }));
     }
-  }, [chatStates, updateChatState]);
+  }, [chatStates, updateChatState, session, status]);
 
   const clearChat = useCallback(() => {
     if (currentCharacterId) {
@@ -269,6 +224,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         messages: [],
         isLoading: false,
         error: null,
+        sessionId: null,
       }));
     }
   }, [currentCharacterId, updateChatState]);
@@ -280,6 +236,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         sendMessage,
         clearChat,
         initializeChat,
+        loadChatSession,
       }}
     >
       {children}

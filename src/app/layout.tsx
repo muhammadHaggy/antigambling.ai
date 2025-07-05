@@ -32,9 +32,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ChatProvider>
-            <div className="flex">
+            <div className="flex h-screen">
               <Sidebar />
-              <main className="flex-1 ml-64 min-h-screen">
+              <main className="flex-1 ml-64 h-full">
                 {children}
               </main>
             </div>

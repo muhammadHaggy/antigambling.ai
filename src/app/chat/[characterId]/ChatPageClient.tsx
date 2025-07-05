@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useChat } from '@/app/_contexts/ChatContext';
 import { characters } from '@/lib/characters';
 import { Character } from '@/lib/types';
@@ -15,15 +16,18 @@ interface ChatPageClientProps {
 export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const { chatState, sendMessage, initializeChat } = useChat();
   const [character, setCharacter] = useState<Character | null>(null);
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('sessionId');
+
   useEffect(() => {
     // Find the character
     const foundCharacter = characters.find(c => c.id === characterId);
     setCharacter(foundCharacter || null);
     
     if (foundCharacter) {
-      initializeChat(characterId);
+      initializeChat(characterId, sessionId || undefined);
     }
-  }, [characterId, initializeChat]);
+  }, [characterId, sessionId, initializeChat]);
 
   // Greeting is now handled in ChatLog component
 
@@ -45,7 +49,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="h-full flex flex-col">
       <ChatHeader character={character} />
       
       <div className="flex-1 flex flex-col min-h-0">
@@ -56,7 +60,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
           error={chatState.error}
         />
         
-        <div className="border-t border-gray-700 p-4">
+        <div className="flex-shrink-0 border-t border-gray-700 p-4">
           <MessageInput 
             onSendMessage={handleSendMessage}
             disabled={chatState.isLoading}

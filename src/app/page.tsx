@@ -10,7 +10,7 @@ export default function Home() {
   const moreCharacters = allCharacters.slice(3);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="h-full bg-gray-950 text-white overflow-y-auto">
       <div className="container mx-auto px-6 py-8">
         {/* Welcome Header */}
         <div className="mb-8">
