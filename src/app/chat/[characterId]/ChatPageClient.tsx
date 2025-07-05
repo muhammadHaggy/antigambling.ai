@@ -5,13 +5,7 @@ import { useChat } from '@/app/_contexts/ChatContext';
 import ChatHeader from '@/app/_components/ChatHeader';
 import ChatLog from '@/app/_components/ChatLog';
 import MessageInput from '@/app/_components/MessageInput';
-
-interface Character {
-  id: string;
-  name: string;
-  creator: string;
-  avatar: string;
-}
+import { Character } from '@/lib/types';
 
 interface ChatPageClientProps {
   character: Character;

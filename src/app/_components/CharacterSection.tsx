@@ -1,13 +1,5 @@
 import CharacterCard from './CharacterCard';
-
-interface Character {
-  id: string;
-  name: string;
-  creator: string;
-  description: string;
-  image: string;
-  interactions: number;
-}
+import { Character } from '@/lib/types';
 
 interface CharacterSectionProps {
   title: string;
@@ -26,7 +18,7 @@ export default function CharacterSection({ title, characters }: CharacterSection
             name={character.name}
             creator={character.creator}
             description={character.description}
-            image={character.image}
+            avatar={character.avatar}
             interactions={character.interactions}
           />
         ))}

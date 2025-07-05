@@ -7,7 +7,7 @@ interface CharacterCardProps {
   name: string;
   creator: string;
   description: string;
-  image: string;
+  avatar: string;
   interactions: number;
 }
 
@@ -16,7 +16,7 @@ export default function CharacterCard({
   name,
   creator,
   description,
-  image,
+  avatar,
   interactions,
 }: CharacterCardProps) {
   return (
@@ -26,7 +26,7 @@ export default function CharacterCard({
     >
       <div className="aspect-video relative mb-3 rounded-lg overflow-hidden">
         <Image
-          src={image}
+          src={avatar}
           alt={name}
           fill
           className="object-cover"
