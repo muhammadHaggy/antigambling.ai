@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Plus, Home, Search, MessageSquare, Settings, Crown } from 'lucide-react';
+import LoginButton from './LoginButton';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -76,25 +76,13 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      {/* User Profile Section */}
+      {/* Authentication Section */}
       <div className="p-4 border-t border-gray-800">
-        <div className="flex items-center gap-3 mb-3">
-          <Image
-            src="/next.svg"
-            alt="User Avatar"
-            width={32}
-            height={32}
-            className="rounded-full bg-gray-700"
-          />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-white">User</p>
-            <p className="text-xs text-gray-400">@user</p>
-          </div>
-        </div>
+        <LoginButton />
         
         <Link
           href="/upgrade"
-          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity mt-3"
         >
           <Crown size={16} />
           <span>Upgrade to c.ai+</span>
