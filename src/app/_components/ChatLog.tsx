@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import NextImage from 'next/image';
 import MessageBubble from './MessageBubble';
-import { useChat } from '@/app/_contexts/ChatContext';
+import { Character } from '@/lib/types';
 
 interface Message {
   id: string;
@@ -10,20 +10,14 @@ interface Message {
   timestamp: Date;
 }
 
-interface Character {
-  id: string;
-  name: string;
-  creator: string;
-  avatar: string;
-}
-
 interface ChatLogProps {
-  chatHistory: Message[];
+  messages: Message[];
   character: Character;
+  isLoading: boolean;
+  error: string | null;
 }
 
-export default function ChatLog({ chatHistory, character }: ChatLogProps) {
-  const { chatState } = useChat();
+export default function ChatLog({ messages, character, isLoading }: ChatLogProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -32,12 +26,22 @@ export default function ChatLog({ chatHistory, character }: ChatLogProps) {
 
   useEffect(() => {
     scrollToBottom();
-  }, [chatHistory, chatState.isLoading]);
+  }, [messages, isLoading]);
+
+  // Show greeting message if no messages exist
+  const displayMessages = messages.length === 0 && !isLoading ? [
+    {
+      id: `${character.id}-greeting`,
+      author: 'character' as const,
+      text: character.greeting,
+      timestamp: new Date(),
+    }
+  ] : messages;
 
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 bg-gray-950">
       <div className="max-w-4xl mx-auto">
-        {chatHistory.map((message, index) => (
+        {displayMessages.map((message, index) => (
           <MessageBubble
             key={message.id}
             author={message.author}
@@ -48,7 +52,7 @@ export default function ChatLog({ chatHistory, character }: ChatLogProps) {
           />
         ))}
         
-        {chatState.isLoading && (
+        {isLoading && (
           <div className="flex gap-3 mb-4 justify-start">
             <div className="flex-shrink-0">
               <NextImage

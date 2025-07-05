@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { Character } from '@/lib/types';
 
 export interface Message {
   id: string;
@@ -9,11 +10,14 @@ export interface Message {
   timestamp: Date;
 }
 
-export interface Character {
+// Convert our message format to Gemini API format
+interface GeminiMessage {
   id: string;
-  name: string;
-  creator: string;
-  avatar: string;
+  role: 'user' | 'model';
+  parts: Array<{
+    text: string;
+  }>;
+  timestamp: Date;
 }
 
 interface ChatState {
@@ -30,54 +34,6 @@ interface ChatContextType {
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
-
-// Character-specific response templates
-const characterResponses: Record<string, string[]> = {
-  '1': [ // Elon Musk
-    "That's a fascinating perspective! You know, at Tesla and SpaceX, we're always pushing the boundaries of what's possible.",
-    "Innovation is key to humanity's future. Whether it's sustainable energy or making life multiplanetary, we need to think big.",
-    "I believe in first principles thinking. Let's break this down to its fundamental components.",
-    "The future is going to be wild! We're working on technologies that seemed impossible just a few years ago.",
-  ],
-  '2': [ // Socrates
-    "An excellent question! But tell me, what do you think you already know about this subject?",
-    "I know that I know nothing. Perhaps we can explore this together through questioning.",
-    "Is it not curious that the more we learn, the more we realize how little we truly understand?",
-    "Let us examine this assumption. What evidence do we have for believing this to be true?",
-  ],
-  '3': [ // Sherlock Holmes
-    "Fascinating! The details you've provided suggest several possible deductions.",
-    "Elementary! When you eliminate the impossible, whatever remains, however improbable, must be the truth.",
-    "I observe that you have a keen interest in this matter. Tell me, what other clues have you noticed?",
-    "The game is afoot! Your observation skills are improving, though there's always more to see.",
-  ],
-  '4': [ // Marie Curie
-    "Science is built on curiosity and persistence. Your question shows both qualities!",
-    "In my research, I've learned that discovery often comes from careful observation and methodical work.",
-    "Knowledge belongs to humanity. I'm delighted to share what I've learned through my experiments.",
-    "Nothing in life is to be feared, it is only to be understood. Let's explore this together.",
-  ],
-  '5': [ // Albert Einstein
-    "Imagination is more important than knowledge. Your question sparks interesting possibilities!",
-    "The important thing is not to stop questioning. Curiosity has its own reason for existence.",
-    "I have no special talent. I am only passionately curious about the universe around us.",
-    "Try not to become a person of success, but rather try to become a person of value.",
-  ],
-  '6': [ // Leonardo da Vinci
-    "Curiosity about life in all its aspects is the secret of great creative minds.",
-    "Learning never exhausts the mind. Your question opens new avenues of exploration!",
-    "Art and science are not separate realms, but different ways of understanding our world.",
-    "I have been impressed with the urgency of doing. Knowing is not enough; we must apply.",
-  ],
-};
-
-// Default responses for unknown characters
-const defaultResponses = [
-  "That's an interesting point! I'd love to hear more about your thoughts on this.",
-  "I appreciate you sharing that with me. What made you think about this topic?",
-  "Your perspective is valuable. How do you think we could explore this further?",
-  "Thank you for bringing this up. It's given me something new to consider.",
-];
 
 // Local storage utilities
 const STORAGE_KEY = 'character-ai-chats';
@@ -148,6 +104,42 @@ const loadFromStorage = (): Record<string, ChatState> => {
   }
 };
 
+// Convert our message format to Gemini API format
+const convertToGeminiFormat = (messages: Message[]): GeminiMessage[] => {
+  return messages.map(msg => ({
+    id: msg.id,
+    role: msg.author === 'user' ? 'user' : 'model',
+    parts: [{ text: msg.text }],
+    timestamp: msg.timestamp,
+  }));
+};
+
+// API call to backend
+const callChatAPI = async (characterId: string, chatHistory: GeminiMessage[]): Promise<string> => {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      characterId,
+      chatHistory,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+  }
+
+  if (!data.success) {
+    throw new Error(data.error || 'Failed to get response from API');
+  }
+
+  return data.reply;
+};
+
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [chatStates, setChatStates] = useState<Record<string, ChatState>>({});
   const [currentCharacterId, setCurrentCharacterId] = useState<string>('');
@@ -189,18 +181,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const initializeChat = useCallback((characterId: string) => {
     setCurrentCharacterId(characterId);
     
-    // Initialize with default message if no messages exist
-    if (!chatStates[characterId]?.messages.length) {
-      const initialMessage: Message = {
-        id: `${characterId}-initial`,
-        author: 'character',
-        text: "Hello! I'm excited to chat with you today. What would you like to discuss?",
-        timestamp: new Date(),
-      };
-      
+    // Don't add initial message here - let the backend handle greetings
+    // Just ensure the chat state exists
+    if (!chatStates[characterId]) {
       updateChatState(characterId, prev => ({
         ...prev,
-        messages: [initialMessage],
+        messages: [],
+        isLoading: false,
+        error: null,
       }));
     }
   }, [chatStates, updateChatState]);
@@ -224,34 +212,56 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }));
 
     try {
-      // Simulate AI response delay
-      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+      // Get current chat history including the new user message
+      const currentState = chatStates[character.id] || { messages: [], isLoading: false, error: null };
+      const allMessages = [...currentState.messages, userMessage];
+      
+      // Convert to Gemini format for API call
+      const geminiHistory = convertToGeminiFormat(allMessages);
 
-      // Generate AI response
-      const responses = characterResponses[character.id] || defaultResponses;
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      // Call the API
+      const reply = await callChatAPI(character.id, geminiHistory);
 
+      // Create AI response message
       const aiMessage: Message = {
         id: `ai-${Date.now()}`,
         author: 'character',
-        text: randomResponse,
+        text: reply,
         timestamp: new Date(),
       };
 
+      // Update state with AI response
       updateChatState(character.id, prev => ({
         ...prev,
         messages: [...prev.messages, aiMessage],
         isLoading: false,
+        error: null,
       }));
 
-    } catch {
+    } catch (error) {
+      console.error('Chat API error:', error);
+      
+      let errorMessage = 'Failed to send message. Please try again.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Gemini API key not configured')) {
+          errorMessage = 'API key not configured. Please check the setup guide.';
+        } else if (error.message.includes('Character not found')) {
+          errorMessage = 'Character not found. Please try a different character.';
+        } else if (error.message.includes('quota')) {
+          errorMessage = 'API quota exceeded. Please try again later.';
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+          errorMessage = 'Network error. Please check your connection.';
+        }
+      }
+
       updateChatState(character.id, prev => ({
         ...prev,
         isLoading: false,
-        error: 'Failed to send message. Please try again.',
+        error: errorMessage,
       }));
     }
-  }, [updateChatState]);
+  }, [chatStates, updateChatState]);
 
   const clearChat = useCallback(() => {
     if (currentCharacterId) {

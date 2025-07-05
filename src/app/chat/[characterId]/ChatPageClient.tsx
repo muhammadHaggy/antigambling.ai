@@ -1,30 +1,75 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useChat } from '@/app/_contexts/ChatContext';
+import { characters } from '@/lib/characters';
+import { Character } from '@/lib/types';
 import ChatHeader from '@/app/_components/ChatHeader';
 import ChatLog from '@/app/_components/ChatLog';
 import MessageInput from '@/app/_components/MessageInput';
-import { Character } from '@/lib/types';
 
 interface ChatPageClientProps {
-  character: Character;
+  characterId: string;
 }
 
-export function ChatPageClient({ character }: ChatPageClientProps) {
-  const { initializeChat, chatState } = useChat();
-  
+export default function ChatPageClient({ characterId }: ChatPageClientProps) {
+  const { chatState, sendMessage, initializeChat } = useChat();
+  const [character, setCharacter] = useState<Character | null>(null);
   useEffect(() => {
-    if (character) {
-      initializeChat(character.id);
+    // Find the character
+    const foundCharacter = characters.find(c => c.id === characterId);
+    setCharacter(foundCharacter || null);
+    
+    if (foundCharacter) {
+      initializeChat(characterId);
     }
-  }, [character, initializeChat]);
+  }, [characterId, initializeChat]);
+
+  // Greeting is now handled in ChatLog component
+
+  const handleSendMessage = async (text: string) => {
+    if (character) {
+      await sendMessage(text, character);
+    }
+  };
+
+  if (!character) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-white mb-2">Character not found</h2>
+          <p className="text-gray-400">The character you&apos;re looking for doesn&apos;t exist.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950">
+    <div className="flex-1 flex flex-col">
       <ChatHeader character={character} />
-      <ChatLog chatHistory={chatState.messages} character={character} />
-      <MessageInput character={character} />
+      
+      <div className="flex-1 flex flex-col min-h-0">
+        <ChatLog 
+          messages={chatState.messages}
+          character={character}
+          isLoading={chatState.isLoading}
+          error={chatState.error}
+        />
+        
+        <div className="border-t border-gray-700 p-4">
+          <MessageInput 
+            onSendMessage={handleSendMessage}
+            disabled={chatState.isLoading}
+            placeholder={`Message ${character.name}...`}
+          />
+          
+          {chatState.error && (
+            <div className="mt-2 p-3 bg-red-900/30 border border-red-700 rounded-lg">
+              <p className="text-red-300 text-sm">{chatState.error}</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 } 
