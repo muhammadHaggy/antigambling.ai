@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Plus, Home, Search, MessageSquare, Settings, Crown } from 'lucide-react';
 
 interface NavItemProps {
@@ -28,6 +31,8 @@ function NavItem({ icon, text, href, isActive }: NavItemProps) {
 }
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
       {/* Header */}
@@ -48,22 +53,25 @@ export default function Sidebar() {
             icon={<Home size={18} />}
             text="Discover"
             href="/"
-            isActive={true}
+            isActive={pathname === '/'}
           />
           <NavItem
             icon={<Search size={18} />}
             text="Search"
             href="/search"
+            isActive={pathname === '/search'}
           />
           <NavItem
             icon={<MessageSquare size={18} />}
             text="Chats"
             href="/chats"
+            isActive={pathname.startsWith('/chat')}
           />
           <NavItem
             icon={<Settings size={18} />}
             text="Settings"
             href="/settings"
+            isActive={pathname === '/settings'}
           />
         </ul>
       </nav>

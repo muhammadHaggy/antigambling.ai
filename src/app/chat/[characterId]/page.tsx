@@ -1,6 +1,4 @@
-import ChatHeader from '../../_components/ChatHeader';
-import ChatLog from '../../_components/ChatLog';
-import MessageInput from '../../_components/MessageInput';
+import { ChatPageClient } from './ChatPageClient';
 
 // Sample character data
 const characters = {
@@ -42,36 +40,15 @@ const characters = {
   },
 };
 
-// Sample chat history
-const sampleChatHistory = [
-  {
-    id: '1',
-    author: 'character' as const,
-    text: 'Hello! I\'m excited to chat with you today. What would you like to discuss?',
-    timestamp: new Date('2024-01-15T10:00:00'),
-  },
-  {
-    id: '2',
-    author: 'user' as const,
-    text: 'Hi there! I\'d love to learn more about your work and innovations.',
-    timestamp: new Date('2024-01-15T10:01:00'),
-  },
-  {
-    id: '3',
-    author: 'character' as const,
-    text: 'That\'s fantastic! I\'m always eager to share insights about technology, space exploration, and sustainable energy. What aspect interests you most?',
-    timestamp: new Date('2024-01-15T10:02:00'),
-  },
-];
-
 interface ChatPageProps {
-  params: {
+  params: Promise<{
     characterId: string;
-  };
+  }>;
 }
 
-export default function ChatPage({ params }: ChatPageProps) {
-  const character = characters[params.characterId as keyof typeof characters];
+export default async function ChatPage({ params }: ChatPageProps) {
+  const { characterId } = await params;
+  const character = characters[characterId as keyof typeof characters];
   
   if (!character) {
     return (
@@ -81,11 +58,5 @@ export default function ChatPage({ params }: ChatPageProps) {
     );
   }
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-950">
-      <ChatHeader character={character} />
-      <ChatLog chatHistory={sampleChatHistory} character={character} />
-      <MessageInput characterName={character.name} />
-    </div>
-  );
+  return <ChatPageClient character={character} />;
 } 
