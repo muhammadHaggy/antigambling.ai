@@ -1,30 +1,45 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Plus, Home, Search, MessageSquare, Settings, Crown } from 'lucide-react';
 import LoginButton from './LoginButton';
+import { useSearch } from '@/app/_contexts/SearchContext';
 
 interface NavItemProps {
   icon: React.ReactNode;
   text: string;
-  href: string;
+  href?: string;
   isActive?: boolean;
+  onClick?: () => void;
 }
 
-function NavItem({ icon, text, href, isActive }: NavItemProps) {
+function NavItem({ icon, text, href, isActive, onClick }: NavItemProps) {
+  const content = (
+    <div className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
+      isActive
+        ? 'bg-gray-800 text-white'
+        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+    }`}>
+      {icon}
+      <span className="text-sm font-medium">{text}</span>
+    </div>
+  );
+
+  if (onClick) {
+    return (
+      <li>
+        <button onClick={onClick} className="w-full text-left">
+          {content}
+        </button>
+      </li>
+    );
+  }
+
   return (
     <li>
-      <Link
-        href={href}
-        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-          isActive
-            ? 'bg-gray-800 text-white'
-            : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-        }`}
-      >
-        {icon}
-        <span className="text-sm font-medium">{text}</span>
+      <Link href={href || '#'}>
+        {content}
       </Link>
     </li>
   );
@@ -32,6 +47,23 @@ function NavItem({ icon, text, href, isActive }: NavItemProps) {
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { searchQuery } = useSearch();
+
+  const handleSearchClick = () => {
+    if (searchQuery) {
+      router.push(`/?search=${encodeURIComponent(searchQuery)}`);
+    } else {
+      router.push('/');
+      // Focus on search input after navigation
+      setTimeout(() => {
+        const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
@@ -58,20 +90,14 @@ export default function Sidebar() {
           <NavItem
             icon={<Search size={18} />}
             text="Search"
-            href="/search"
-            isActive={pathname === '/search'}
+            onClick={handleSearchClick}
+            isActive={pathname === '/' && !!searchQuery}
           />
           <NavItem
             icon={<MessageSquare size={18} />}
             text="Chats"
             href="/chats"
             isActive={pathname.startsWith('/chat')}
-          />
-          <NavItem
-            icon={<Settings size={18} />}
-            text="Settings"
-            href="/settings"
-            isActive={pathname === '/settings'}
           />
         </ul>
       </nav>

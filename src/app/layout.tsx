@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./_components/Sidebar";
 import { ChatProvider } from "./_contexts/ChatContext";
+import { SearchProvider } from "./_contexts/SearchContext";
 import AuthProvider from "./_components/AuthProvider";
 
 const geistSans = Geist({
@@ -31,14 +32,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950`}
       >
         <AuthProvider>
-          <ChatProvider>
-            <div className="flex h-screen">
-              <Sidebar />
-              <main className="flex-1 ml-64 h-full">
-                {children}
-              </main>
-            </div>
-          </ChatProvider>
+          <SearchProvider>
+            <ChatProvider>
+              <div className="flex h-screen">
+                <Sidebar />
+                <main className="flex-1 ml-64 h-full">
+                  {children}
+                </main>
+              </div>
+            </ChatProvider>
+          </SearchProvider>
         </AuthProvider>
       </body>
     </html>
