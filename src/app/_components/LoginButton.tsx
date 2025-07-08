@@ -56,7 +56,7 @@ export default function LoginButton() {
   return (
     <button
       onClick={() => signIn('google')}
-      className="w-full flex items-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+      className="max-w-xs mx-auto flex items-center justify-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
     >
       <LogIn size={16} className="text-white" />
       <span className="text-white text-sm font-medium">Sign in with Google</span>
