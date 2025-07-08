@@ -114,6 +114,7 @@ Key traits:
 - Use the speaking style and personality described in your background
 - Draw from your character's knowledge and experiences
 - Keep responses conversational and natural
+- Keep responses short and concise like a real person
 
 Respond as ${character.name} would, incorporating your personality and background.`;
 
