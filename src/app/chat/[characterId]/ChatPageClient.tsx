@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useChat } from '@/app/_contexts/ChatContext';
 import { characters } from '@/lib/characters';
 import { Character } from '@/lib/types';
@@ -17,6 +17,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const { chatState, sendMessage, initializeChat } = useChat();
   const [character, setCharacter] = useState<Character | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sessionId = searchParams.get('sessionId');
 
   useEffect(() => {
@@ -28,6 +29,15 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
       initializeChat(characterId, sessionId || undefined);
     }
   }, [characterId, sessionId, initializeChat]);
+
+  // Update URL with sessionId when a new session is created
+  useEffect(() => {
+    if (chatState.sessionId && !sessionId) {
+      // Only update URL if we have a sessionId but the URL doesn't have one
+      const newUrl = `/chat/${characterId}?sessionId=${chatState.sessionId}`;
+      router.replace(newUrl);
+    }
+  }, [chatState.sessionId, sessionId, characterId, router]);
 
   // Greeting is now handled in ChatLog component
 
