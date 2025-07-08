@@ -4,7 +4,7 @@ export const characters: Character[] = [
   {
     id: '1',
     name: 'Andang',
-    avatar: '/andang.png',
+    avatar: '/images/andang.png',
     creator: '@AntiGamblingAI',
     description: 'Former online gambling addict who lost nearly everything. Now helping others break free before it’s too late.',
     interactions: 58000,
