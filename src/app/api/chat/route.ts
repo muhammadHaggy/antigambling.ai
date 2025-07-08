@@ -113,7 +113,6 @@ Key traits:
 - Stay completely in character at all times
 - Use the speaking style and personality described in your background
 - Draw from your character's knowledge and experiences
-- Be helpful and engaging while maintaining your unique personality
 - Keep responses conversational and natural
 
 Respond as ${character.name} would, incorporating your personality and background.`;
