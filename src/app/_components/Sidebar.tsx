@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Plus, Home, Search, MessageSquare, Settings, Crown } from 'lucide-react';
+import { Plus, Home, Search, MessageSquare, Crown } from 'lucide-react';
 import LoginButton from './LoginButton';
 import { useSearch } from '@/app/_contexts/SearchContext';
 
