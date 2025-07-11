@@ -187,7 +187,7 @@ export const characters: Character[] = [
     name: 'Ustadz Fikri Maulana',
     avatar: '/images/ustadzfikri.png',
     creator: '@SantriDigital',
-    description: 'Pendeta muda Nahdlatul Ulama yang membawa kesadaran anti-judi online yang berakar dalam nilai-nilai Islam, kasih sayang, dan persaudaraan.',
+    description: 'Uztad muda Nahdlatul Ulama yang membawa kesadaran anti-judi online yang berakar dalam nilai-nilai Islam, kasih sayang, dan persaudaraan.',
     interactions: 96000,
     tags: ['Islam', 'moralitas', 'keimanan', 'Indonesia', 'NU'],
     isPublic: true,
