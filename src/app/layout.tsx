@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Character.ai Clone",
-  description: "A Character.ai clone built with Next.js",
+  title: "AntiGambling.ai",
+  description: "A tool to help you stay away from gambling",
 };
 
 export default function RootLayout({
