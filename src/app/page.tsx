@@ -78,8 +78,9 @@ function HomeContent() {
   }
 
   // Split characters into sections for better organization (when not searching)
-  const featuredCharacters = displayCharacters.slice(0, 3);
-  const moreCharacters = displayCharacters.slice(3);
+  const victimCharacters = displayCharacters.slice(0, 3);
+  const expertCharacters = displayCharacters.slice(3, 5);
+  const religiousCharacters = displayCharacters.slice(5);
 
   return (
     <div className="h-full bg-gray-950 text-white overflow-y-auto">
@@ -160,9 +161,12 @@ function HomeContent() {
           </div>
         ) : (
           <div className="space-y-8">
-            <CharacterSection title="Featured Characters" characters={featuredCharacters} />
-            {moreCharacters.length > 0 && (
-              <CharacterSection title="More Characters" characters={moreCharacters} />
+            <CharacterSection title="Dengarkan Kesaksian Korban Judi Online" characters={victimCharacters} />
+            {expertCharacters.length > 0 && (
+              <CharacterSection title="Konsultasi dengan Ahli" characters={expertCharacters} />
+            )}
+            {religiousCharacters.length > 0 && (
+              <CharacterSection title="Konsultasi dengan Tokoh Agama" characters={religiousCharacters} />
             )}
           </div>
         )}
