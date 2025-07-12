@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useChat } from '@/app/_contexts/ChatContext';
 import { characters } from '@/lib/characters';
 import { Character } from '@/lib/types';
