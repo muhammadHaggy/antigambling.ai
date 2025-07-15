@@ -8,6 +8,8 @@ import { Character } from '@/lib/types';
 import ChatHeader from '@/app/_components/ChatHeader';
 import ChatLog from '@/app/_components/ChatLog';
 import MessageInput from '@/app/_components/MessageInput';
+import VoiceCallOverlay from '@/app/_components/VoiceCallOverlay';
+import { useVoiceChat } from '@/app/hooks/useVoiceChat';
 
 interface ChatPageClientProps {
   characterId: string;
@@ -16,6 +18,9 @@ interface ChatPageClientProps {
 export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const { chatState, sendMessage, initializeChat } = useChat();
   const [character, setCharacter] = useState<Character | null>(null);
+  const [isVoiceChatActive, setIsVoiceChatActive] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [callDuration, setCallDuration] = useState(0);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('sessionId');
 
@@ -29,6 +34,25 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     }
   }, [characterId, sessionId, initializeChat]);
 
+  // Voice chat hook - only initialize if character is found
+  const voiceChat = useVoiceChat(character || characters[0]); // Fallback to first character
+
+  // Call duration timer
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isVoiceChatActive && (voiceChat.status === 'connected' || voiceChat.status === 'recording')) {
+      interval = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+    } else {
+      setCallDuration(0);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isVoiceChatActive, voiceChat.status]);
+
 
   // Greeting is now handled in ChatLog component
 
@@ -37,6 +61,32 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
       await sendMessage(text, character);
     }
   };
+
+  const handleStartVoiceChat = async () => {
+    if (!character) return;
+    
+    try {
+      setIsVoiceChatActive(true);
+      await voiceChat.startVoiceChat();
+    } catch (error) {
+      console.error('Failed to start voice chat:', error);
+      setIsVoiceChatActive(false);
+    }
+  };
+
+  const handleStopVoiceChat = () => {
+    voiceChat.forceStopVoiceChat(); // Use force stop for user-initiated stops
+    setIsVoiceChatActive(false);
+    setIsMuted(false);
+    setCallDuration(0);
+  };
+
+  const handleToggleMute = () => {
+    setIsMuted(!isMuted);
+    // Note: Actual mute functionality would be implemented in the voice chat hook
+  };
+
+
 
   if (!character) {
     return (
@@ -51,7 +101,11 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <ChatHeader character={character} />
+      <ChatHeader 
+        character={character} 
+        onStartVoiceChat={handleStartVoiceChat}
+        isVoiceChatActive={isVoiceChatActive}
+      />
       
       <div className="flex-1 flex flex-col min-h-0">
         <ChatLog 
@@ -75,6 +129,21 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
           )}
         </div>
       </div>
+
+      {/* Voice Call Overlay */}
+      {isVoiceChatActive && (
+        <VoiceCallOverlay
+          character={character}
+          status={voiceChat.status}
+          isRecording={voiceChat.isRecording}
+          error={voiceChat.error}
+          onHangUp={handleStopVoiceChat}
+
+          onToggleMute={handleToggleMute}
+          isMuted={isMuted}
+          callDuration={callDuration}
+        />
+      )}
     </div>
   );
 } 

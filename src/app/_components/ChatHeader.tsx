@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Share, Settings } from 'lucide-react';
+import { ArrowLeft, Phone } from 'lucide-react';
 
 interface Character {
   id: string;
@@ -11,9 +11,11 @@ interface Character {
 
 interface ChatHeaderProps {
   character: Character;
+  onStartVoiceChat?: () => void;
+  isVoiceChatActive?: boolean;
 }
 
-export default function ChatHeader({ character }: ChatHeaderProps) {
+export default function ChatHeader({ character, onStartVoiceChat, isVoiceChatActive = false }: ChatHeaderProps) {
   return (
     <header className="sticky top-0 z-10 bg-gray-900/80 backdrop-blur-sm border-b border-gray-800">
       <div className="flex items-center justify-between px-4 py-3">
@@ -42,13 +44,22 @@ export default function ChatHeader({ character }: ChatHeaderProps) {
         </div>
 
         {/* Right side - Action buttons */}
-        <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
-            <Share size={18} className="text-gray-300" />
-          </button>
-          <button className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
-            <Settings size={18} className="text-gray-300" />
-          </button>
+        <div className="flex items-center gap-2 mr-4">
+          {/* Voice Call Button */}
+          {onStartVoiceChat && (
+            <button 
+              onClick={onStartVoiceChat}
+              className={`p-2 rounded-lg transition-colors ${
+                isVoiceChatActive 
+                  ? 'bg-green-600 hover:bg-green-700' 
+                  : 'hover:bg-gray-800'
+              }`}
+              title="Start voice chat"
+            >
+              <Phone size={26} className={isVoiceChatActive ? 'text-white' : 'text-gray-300'} />
+            </button>
+          )}
+        
         </div>
       </div>
     </header>
