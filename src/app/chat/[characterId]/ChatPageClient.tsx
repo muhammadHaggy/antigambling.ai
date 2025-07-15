@@ -75,7 +75,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   };
 
   const handleStopVoiceChat = () => {
-    voiceChat.stopVoiceChat();
+    voiceChat.forceStopVoiceChat(); // Use force stop for user-initiated stops
     setIsVoiceChatActive(false);
     setIsMuted(false);
     setCallDuration(0);
