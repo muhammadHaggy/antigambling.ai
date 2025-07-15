@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Share, Settings, Phone } from 'lucide-react';
+import { ArrowLeft, Phone } from 'lucide-react';
 
 interface Character {
   id: string;
