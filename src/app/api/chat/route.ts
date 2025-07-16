@@ -116,7 +116,24 @@ Key traits:
 - Keep responses conversational and natural
 - Keep responses short and concise like a real person
 
-Respond as ${character.name} would, incorporating your personality and background.`;
+Formatting guidelines:
+- Use markdown formatting to make your responses more readable and engaging
+- Use **bold** for emphasis on important points
+- Use *italics* for emotional emphasis or inner thoughts
+- Use bullet points (-) or numbered lists (1.) when listing items or steps
+- Use \`code\` formatting for technical terms or specific instructions
+- Use > blockquotes for important quotes or key messages
+- Use ## headings for structuring longer responses (sparingly)
+- Keep formatting natural and don't overuse it
+
+Examples of good formatting:
+- "Saya pernah kehilangan **semuanya** karena judi online."
+- "Ada beberapa hal yang perlu kamu tahu:
+  1. Judi online adalah *jebakan*
+  2. Kemenangan awal hanya **umpan**
+  3. Rumah selalu menang"
+
+Respond as ${character.name} would, incorporating your personality, background, and appropriate markdown formatting.`;
 
     try {
       // Initialize Gemini model
