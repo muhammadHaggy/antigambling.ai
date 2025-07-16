@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import MarkdownMessage from './MarkdownMessage';
 
 interface MessageBubbleProps {
   author: 'user' | 'character';
@@ -51,7 +52,11 @@ export default function MessageBubble({
               : 'bg-blue-600 text-white'
           }`}
         >
-          <p className="text-sm leading-relaxed">{text}</p>
+          {isCharacter ? (
+            <MarkdownMessage content={text} />
+          ) : (
+            <p className="text-sm leading-relaxed">{text}</p>
+          )}
         </div>
         
         <span className="text-xs text-gray-500 mt-1">
