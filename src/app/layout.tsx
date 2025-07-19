@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./_components/Sidebar";
 import { ChatProvider } from "./_contexts/ChatContext";
 import { SearchProvider } from "./_contexts/SearchContext";
 import AuthProvider from "./_components/AuthProvider";

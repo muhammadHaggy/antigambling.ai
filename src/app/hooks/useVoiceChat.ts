@@ -628,10 +628,11 @@ export function useVoiceChat(character: Character): VoiceChatResult {
         }
         
         // Stop all audio sources
-        console.log('🔍 [VOICE-CLEANUP] Stopping', sourcesRef.current.size, 'audio sources');
-        for (const source of sourcesRef.current.values()) {
+        const currentSources = sourcesRef.current;
+        console.log('🔍 [VOICE-CLEANUP] Stopping', currentSources.size, 'audio sources');
+        for (const source of currentSources.values()) {
           source.stop();
-          sourcesRef.current.delete(source);
+          currentSources.delete(source);
         }
         
         // Clean up audio contexts
@@ -674,9 +675,10 @@ export function useVoiceChat(character: Character): VoiceChatResult {
             }
             
             // Stop all audio sources
-            for (const source of sourcesRef.current.values()) {
+            const currentSources = sourcesRef.current;
+            for (const source of currentSources.values()) {
               source.stop();
-              sourcesRef.current.delete(source);
+              currentSources.delete(source);
             }
             
             // Clean up audio contexts
@@ -686,7 +688,7 @@ export function useVoiceChat(character: Character): VoiceChatResult {
         }, 2000); // Wait 2 seconds before cleanup to allow initialization to complete
       }
     };
-  }, []); // Empty dependency array - only run once on mount
+  }, [cleanupAudioContexts, status]); // Include dependencies
 
   return {
     status,
