@@ -83,11 +83,11 @@ function HomeContent() {
   const religiousCharacters = displayCharacters.slice(5);
 
   return (
-    <div className="h-full bg-gray-950 text-white overflow-y-auto">
-      <div className="container mx-auto px-6 py-8">
+    <div className="h-full bg-gray-950 text-white overflow-y-auto overflow-x-hidden">
+      <div className="container mx-auto px-4 sm:px-6 py-8 max-w-full">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-6 break-words">
             {isSearchMode && searchQuery ? (
               <>Search results for: <span className="text-purple-400">&quot;{searchQuery}&quot;</span></>
             ) : (
@@ -121,7 +121,7 @@ function HomeContent() {
                     Clear search
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {searchResults.map((character) => (
                     <CharacterCard 
                       key={character.id}

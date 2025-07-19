@@ -5,6 +5,7 @@ import Sidebar from "./_components/Sidebar";
 import { ChatProvider } from "./_contexts/ChatContext";
 import { SearchProvider } from "./_contexts/SearchContext";
 import AuthProvider from "./_components/AuthProvider";
+import ClientLayout from "./_components/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,18 +29,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-950`}
       >
         <AuthProvider>
           <SearchProvider>
             <ChatProvider>
-              <div className="flex h-screen">
-                <Sidebar />
-                <main className="flex-1 ml-64 h-full">
-                  {children}
-                </main>
-              </div>
+              <ClientLayout>
+                {children}
+              </ClientLayout>
             </ChatProvider>
           </SearchProvider>
         </AuthProvider>
