@@ -9,13 +9,14 @@ services:
     # Ensure DATABASE_URL matches what Prisma expects for the SQLite file
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=file:/app/prisma/dev.db
       # Add any other environment variables your Next.js app needs
     ports:
       - "3000:3000" # Expose Next.js port for Cloudflare Tunnel
     volumes:
       # Mount a volume for persistent SQLite database
       # This ensures your dev.db file persists across container restarts
-      - db_data:/app/prisma/dev.db
+      - db_data:/app/prisma
     restart: unless-stopped
     networks:
       - app-network
