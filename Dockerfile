@@ -42,7 +42,6 @@ COPY --from=builder /app/public ./public
 # This ensures the database file is present in the final image,
 # and then it will be mounted over by the volume in docker-compose.yml
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/dev.db ./dev.db
 
 # Expose the port Next.js runs on (default is 3000)
 EXPOSE 3000
