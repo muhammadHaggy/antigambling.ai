@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs-app
+    # Ensure DATABASE_URL matches what Prisma expects for the SQLite file
+    environment:
+      - DATABASE_URL=file:/app/dev.db
+      - NODE_ENV=production
+      # Add any other environment variables your Next.js app needs
+    ports:
+      - "3000:3000" # Expose Next.js port for Cloudflare Tunnel
+    volumes:
+      # Mount a volume for persistent SQLite database
+      # This ensures your dev.db file persists across container restarts
+      - db_data:/app/dev.db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    command: tunnel run --token ${CF_TUNNEL_TOKEN}
+    # Mount a volume for cloudflared credentials if you prefer using credentials.json
+    # volumes:
+    #   - ./cloudflare:/etc/cloudflared
+    environment:
+      # Pass the Cloudflare Tunnel token as an environment variable
+      # IMPORTANT: Replace YOUR_CLOUDFLARE_TUNNEL_TOKEN with your actual token
+      - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    depends_on:
+      - nextjs-app # Ensure nextjs-app is up before cloudflared starts
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  db_data: # Define the named volume for the database
+
+networks:
+  app-network:
+    driver: bridge
