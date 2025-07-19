@@ -92,6 +92,42 @@ export function useVoiceChat(character: Character): VoiceChatResult {
     outputNodeRef.current = null;
   }, []);
 
+  const stopRecording = useCallback(() => {
+    console.log('🔍 [VOICE-REC] stopRecording called - isRecording:', isRecording, 'hasMediaStream:', !!mediaStreamRef.current);
+    
+    if (!isRecording && !mediaStreamRef.current && !inputAudioContextRef.current) {
+      console.log('🔍 [VOICE-REC] Nothing to stop, returning early');
+      return;
+    }
+
+    console.log('🔍 [VOICE-REC] Stopping recording...');
+    setIsRecording(false);
+    isRecordingRef.current = false;
+
+    if (scriptProcessorNodeRef.current && sourceNodeRef.current && inputAudioContextRef.current) {
+      console.log('🔍 [VOICE-REC] Disconnecting audio nodes');
+      scriptProcessorNodeRef.current.disconnect();
+      sourceNodeRef.current.disconnect();
+    }
+
+    scriptProcessorNodeRef.current = null;
+    sourceNodeRef.current = null;
+
+    if (mediaStreamRef.current) {
+      console.log('🔍 [VOICE-REC] Stopping media stream tracks');
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+
+    console.log('🔍 [VOICE-REC] Recording stopped, updating status to connected');
+    if (isActiveRef.current) {
+      updateStatus('connected');
+    }
+    
+    // Reset cleanup prevention when recording stops
+    cleanupPreventedRef.current = false;
+  }, [isRecording, updateStatus]);
+
   const initSession = useCallback(async () => {
     console.log('🔍 [VOICE-INIT] initSession called - current session exists:', !!sessionRef.current);
     console.log('🔍 [VOICE-INIT] isInitializing:', isInitializingRef.current);
@@ -248,6 +284,9 @@ export function useVoiceChat(character: Character): VoiceChatResult {
           onclose: (e: CloseEvent) => {
             console.log('🔍 [VOICE-CONN] WebSocket connection closed:', e.code, e.reason);
             console.log('🔍 [VOICE-CONN] Connection closed during initialization:', isInitializingRef.current);
+            
+            stopRecording();
+
             isInitializingRef.current = false;
             cleanupPreventedRef.current = false;
             if (isActiveRef.current) {
@@ -285,43 +324,7 @@ export function useVoiceChat(character: Character): VoiceChatResult {
       isActiveRef.current = false;
       updateStatus('idle');
     }
-  }, [character.name, voiceConfig, updateStatus, updateError, initAudio]);
-
-  const stopRecording = useCallback(() => {
-    console.log('🔍 [VOICE-REC] stopRecording called - isRecording:', isRecording, 'hasMediaStream:', !!mediaStreamRef.current);
-    
-    if (!isRecording && !mediaStreamRef.current && !inputAudioContextRef.current) {
-      console.log('🔍 [VOICE-REC] Nothing to stop, returning early');
-      return;
-    }
-
-    console.log('🔍 [VOICE-REC] Stopping recording...');
-    setIsRecording(false);
-    isRecordingRef.current = false;
-
-    if (scriptProcessorNodeRef.current && sourceNodeRef.current && inputAudioContextRef.current) {
-      console.log('🔍 [VOICE-REC] Disconnecting audio nodes');
-      scriptProcessorNodeRef.current.disconnect();
-      sourceNodeRef.current.disconnect();
-    }
-
-    scriptProcessorNodeRef.current = null;
-    sourceNodeRef.current = null;
-
-    if (mediaStreamRef.current) {
-      console.log('🔍 [VOICE-REC] Stopping media stream tracks');
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
-    }
-
-    console.log('🔍 [VOICE-REC] Recording stopped, updating status to connected');
-    if (isActiveRef.current) {
-      updateStatus('connected');
-    }
-    
-    // Reset cleanup prevention when recording stops
-    cleanupPreventedRef.current = false;
-  }, [isRecording, updateStatus]);
+  }, [character.name, voiceConfig, updateStatus, updateError, initAudio, stopRecording]);
 
   const startRecording = useCallback(async () => {
     console.log('🔍 [VOICE-REC] startRecording called - isRecording:', isRecording, 'hasSession:', !!sessionRef.current);
@@ -395,22 +398,20 @@ export function useVoiceChat(character: Character): VoiceChatResult {
 
       scriptProcessorNodeRef.current.onaudioprocess = (audioProcessingEvent) => {
         if (!isRecordingRef.current || !sessionRef.current) {
-          console.log('🎤 [VOICE-PROC] Skipping audio processing - recording:', isRecordingRef.current, 'session:', !!sessionRef.current);
           return;
         }
 
         const inputBuffer = audioProcessingEvent.inputBuffer;
         const pcmData = inputBuffer.getChannelData(0);
-
         const maxAmplitude = Math.max(...pcmData.map(Math.abs));
+
         if (maxAmplitude > 0.001) {
           console.log('🎤 [VOICE-PROC] Processing audio chunk - max amplitude:', maxAmplitude.toFixed(6));
-        }
-
-        try {
-          sessionRef.current.sendRealtimeInput({ media: createBlob(pcmData) });
-        } catch (error) {
-          console.error('🎤 [VOICE-ERROR] Error sending audio data:', error);
+          try {
+            sessionRef.current.sendRealtimeInput({ media: createBlob(pcmData) });
+          } catch (error) {
+            console.error('🎤 [VOICE-ERROR] Error sending audio data:', error);
+          }
         }
       };
 
