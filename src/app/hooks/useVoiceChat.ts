@@ -440,26 +440,25 @@ export function useVoiceChat(character: Character): VoiceChatResult {
   const startVoiceChat = useCallback(async () => {
     console.log('🔍 [VOICE-START] startVoiceChat called - current status:', status, 'permission:', permissionState);
     
+    isActiveRef.current = true;
+    cleanupPreventedRef.current = true;
+
     try {
       updateError(null);
       updateStatus('connecting');
-      isActiveRef.current = true;
-      cleanupPreventedRef.current = true; // Prevent cleanup during entire voice chat session
       
-      // Cancel any pending cleanup timer
       if (cleanupTimerRef.current) {
         console.log('🔍 [VOICE-START] Canceling pending cleanup timer');
         clearTimeout(cleanupTimerRef.current);
         cleanupTimerRef.current = null;
       }
       
-      // Check permissions first
       if (permissionState !== 'granted') {
         console.log('🔍 [VOICE-START] Requesting microphone permission...');
         const granted = await requestPermission();
         if (!granted) {
           updateError('Microphone permission is required for voice chat');
-          return;
+          return; 
         }
         console.log('🔍 [VOICE-START] Microphone permission granted');
       }
@@ -467,7 +466,6 @@ export function useVoiceChat(character: Character): VoiceChatResult {
       console.log('🔍 [VOICE-START] Initializing session...');
       await initSession();
       
-      // Wait a bit for session to be fully ready
       await new Promise(resolve => setTimeout(resolve, 100));
       
       console.log('🔍 [VOICE-START] Starting recording...');
@@ -479,8 +477,9 @@ export function useVoiceChat(character: Character): VoiceChatResult {
       console.error('🔍 [VOICE-ERROR] Error starting voice chat:', err);
       updateError(err instanceof Error ? err.message : 'Failed to start voice chat');
       isActiveRef.current = false;
-      cleanupPreventedRef.current = false;
       updateStatus('idle');
+    } finally {
+      cleanupPreventedRef.current = false;
     }
   }, [status, permissionState, requestPermission, initSession, startRecording, updateError, updateStatus]);
 
@@ -628,7 +627,6 @@ export function useVoiceChat(character: Character): VoiceChatResult {
         }
         
         // Stop all audio sources
-        console.log('🔍 [VOICE-CLEANUP] Stopping', sourcesRef.current.size, 'audio sources');
         for (const source of sourcesRef.current.values()) {
           source.stop();
           sourcesRef.current.delete(source);
