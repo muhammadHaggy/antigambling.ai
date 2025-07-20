@@ -32,8 +32,12 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
 
   // Add effect to handle navigation and cleanup
   useEffect(() => {
-    // Reset chat state when component mounts
+    // Reset chat state when component mounts or character changes
     resetChatState();
+
+    // Reset survey and timer state when navigating to different character
+    setShowEndOfSessionSurvey(false);
+    resetInactivityTimer();
 
     // Find the character and initialize chat
     const foundCharacter = characters.find(c => c.id === characterId);
@@ -46,6 +50,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     // Reset chat state when unmounting
     return () => {
       resetChatState();
+      resetInactivityTimer();
     };
   }, [characterId, sessionId, initializeChat, resetChatState]);
 
@@ -82,13 +87,11 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     if (inactivityTimer) {
       clearTimeout(inactivityTimer);
     }
-    
     // Start new timer for 10 minutes (600000ms)
     const timer = setTimeout(() => {
       setShowEndOfSessionSurvey(true);
       setInactivityTimer(null);
-    }, 600000); // 30 seconds for testing (change to 600000 for 10 minutes)
-    
+    }, 600000); // 10 minutes
     setInactivityTimer(timer);
   };
 
@@ -102,17 +105,14 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   // Effect to manage inactivity timer based on messages
   useEffect(() => {
     const messages = chatState.messages;
-    
     // Only start timer if we have messages and the last message is from character
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
-      
       // Start timer when AI sends a message
       if (lastMessage.author === 'character' && !chatState.isLoading) {
         startInactivityTimer();
       }
     }
-    
     // Cleanup timer on unmount
     return () => {
       if (inactivityTimer) {
@@ -173,7 +173,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     // Note: Actual mute functionality would be implemented in the voice chat hook
   };
 
-  const handleSurveySubmit = async (rating: number) => {
+  const handleSurveySubmit = async (rating: number, textComment?: string) => {
     if (!chatState.sessionId) {
       console.error('No session ID available for survey submission');
       return;
@@ -188,6 +188,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
         body: JSON.stringify({
           feedbackType: 'session_rating',
           rating,
+          textComment: textComment || undefined,
           sessionId: chatState.sessionId,
         }),
       });
