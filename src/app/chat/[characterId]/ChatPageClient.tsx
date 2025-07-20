@@ -21,6 +21,8 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const [isVoiceChatActive, setIsVoiceChatActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
+  const [documentContext, setDocumentContext] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('sessionId');
 
@@ -53,13 +55,24 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     };
   }, [isVoiceChatActive, voiceChat.status]);
 
-
   // Greeting is now handled in ChatLog component
 
   const handleSendMessage = async (text: string) => {
     if (character) {
-      await sendMessage(text, character);
+      // Send the message with document context and filename as separate parameters
+      await sendMessage(text, character, documentContext, uploadedFileName);
+      
+      // Clear document context and filename after using it once
+      if (documentContext) {
+        setDocumentContext(null);
+        setUploadedFileName(null);
+      }
     }
+  };
+
+  const handleDocumentUploaded = (summary: string, filename: string) => {
+    setDocumentContext(summary);
+    setUploadedFileName(filename);
   };
 
   const handleStartVoiceChat = async () => {
@@ -85,8 +98,6 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     setIsMuted(!isMuted);
     // Note: Actual mute functionality would be implemented in the voice chat hook
   };
-
-
 
   if (!character) {
     return (
@@ -118,8 +129,10 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
         <div className="flex-shrink-0 border-t border-gray-700 p-4">
           <MessageInput 
             onSendMessage={handleSendMessage}
+            onDocumentUploaded={handleDocumentUploaded}
             disabled={chatState.isLoading}
             placeholder={`Message ${character.name}...`}
+            uploadedFileName={uploadedFileName}
           />
           
           {chatState.error && (
@@ -138,7 +151,6 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
           isRecording={voiceChat.isRecording}
           error={voiceChat.error}
           onHangUp={handleStopVoiceChat}
-
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
           callDuration={callDuration}

@@ -31,6 +31,18 @@ function NavItem({ icon, text, href, isActive, onClick }: NavItemProps) {
     </div>
   );
 
+  // If we have an href, use Link and handle onClick within the Link
+  if (href) {
+    return (
+      <li>
+        <Link href={href} onClick={onClick}>
+          {content}
+        </Link>
+      </li>
+    );
+  }
+
+  // If we only have onClick (no href), render as button
   if (onClick) {
     return (
       <li>
@@ -41,11 +53,12 @@ function NavItem({ icon, text, href, isActive, onClick }: NavItemProps) {
     );
   }
 
+  // Fallback
   return (
     <li>
-      <Link href={href || '#'}>
+      <div className="cursor-not-allowed opacity-50">
         {content}
-      </Link>
+      </div>
     </li>
   );
 }

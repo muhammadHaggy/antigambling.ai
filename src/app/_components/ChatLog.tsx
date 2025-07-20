@@ -8,6 +8,7 @@ interface Message {
   author: 'user' | 'character';
   text: string;
   timestamp: Date;
+  documentFilename?: string;
 }
 
 interface ChatLogProps {
@@ -49,6 +50,7 @@ export default function ChatLog({ messages, character, isLoading }: ChatLogProps
             timestamp={message.timestamp}
             characterAvatar={character.avatar}
             isFirst={index === 0 && message.author === 'character'}
+            documentFilename={message.documentFilename}
           />
         ))}
         
