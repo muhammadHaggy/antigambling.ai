@@ -20,7 +20,7 @@ export default function MessageInput({
 }: MessageInputProps) {
   const [message, setMessage] = useState('');
   const [isUploadingDocument, setIsUploadingDocument] = useState(false);
-  const [currentUploadFileName, setCurrentUploadFileName] = useState<string | null>(null);
+  const [, setCurrentUploadFileName] = useState<string | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
