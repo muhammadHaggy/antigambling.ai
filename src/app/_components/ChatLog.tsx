@@ -16,9 +16,10 @@ interface ChatLogProps {
   character: Character;
   isLoading: boolean;
   error: string | null;
+  sessionId?: string;
 }
 
-export default function ChatLog({ messages, character, isLoading }: ChatLogProps) {
+export default function ChatLog({ messages, character, isLoading, sessionId }: ChatLogProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -51,6 +52,8 @@ export default function ChatLog({ messages, character, isLoading }: ChatLogProps
             characterAvatar={character.avatar}
             isFirst={index === 0 && message.author === 'character'}
             documentFilename={message.documentFilename}
+            messageId={message.id}
+            sessionId={sessionId}
           />
         ))}
         

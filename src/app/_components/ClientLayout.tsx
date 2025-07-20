@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Sidebar from './Sidebar';
+import WeeklyProgressCheckin from './WeeklyProgressCheckin';
+import { useWeeklyCheckin } from '../hooks/useWeeklyCheckin';
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -10,6 +13,51 @@ interface ClientLayoutProps {
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const { data: session } = useSession();
+  const { 
+    showWeeklyCheckin, 
+    updateLastCheckinDate, 
+    closeWeeklyCheckin 
+  } = useWeeklyCheckin();
+
+  const handleWeeklyCheckinSubmit = async (rating: number) => {
+    if (!session?.user) {
+      console.error('No user session available for weekly check-in submission');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          feedbackType: 'weekly_checkin',
+          rating,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit weekly check-in');
+      }
+
+      // Update localStorage date to prevent showing again for a week
+      updateLastCheckinDate();
+      
+      console.log('Weekly check-in submitted successfully:', data);
+    } catch (error) {
+      console.error('Error submitting weekly check-in:', error);
+      throw error; // Re-throw to let the component handle the error
+    }
+  };
+
+  const handleWeeklyCheckinClose = () => {
+    // Close without updating the date (user skipped)
+    closeWeeklyCheckin();
+  };
 
   return (
     <div className="flex h-screen w-full overflow-x-hidden">
@@ -27,6 +75,14 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       <main className="flex-1 md:ml-64 h-full pt-16 md:pt-0 w-full overflow-x-hidden">
         {children}
       </main>
+
+      {/* Weekly Progress Check-in Modal */}
+      {showWeeklyCheckin && session?.user && (
+        <WeeklyProgressCheckin
+          onSubmit={handleWeeklyCheckinSubmit}
+          onClose={handleWeeklyCheckinClose}
+        />
+      )}
     </div>
   );
 } 

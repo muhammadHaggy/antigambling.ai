@@ -46,6 +46,7 @@ model User {
   sessions      Session[]
   // YOUR CUSTOM RELATION
   chatSessions  ChatSession[]
+  feedback      Feedback[]
 }
 
 model VerificationToken {
@@ -65,6 +66,7 @@ model ChatSession {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   messages    ChatMessage[]
+  feedback    Feedback[]
 }
 
 model ChatMessage {
@@ -74,4 +76,22 @@ model ChatMessage {
   role      String      // 'user' or 'model'
   content   String      // The message content
   createdAt DateTime    @default(now())
+  // Add relation to feedback
+  feedback  Feedback[]
+}
+
+// FEEDBACK MODEL
+model Feedback {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feedbackType String       // 'message_rating', 'session_rating', 'weekly_checkin', etc.
+  rating       Int?         // For star ratings (1-5) or thumbs up/down (+1/-1)
+  textComment  String?      // Optional text feedback
+  messageId    String?      // For message-specific feedback
+  message      ChatMessage? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  sessionId    String?      // For session-specific feedback
+  session      ChatSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
