@@ -21,10 +21,11 @@ interface ChatState {
 
 interface ChatContextType {
   chatState: ChatState;
-  sendMessage: (text: string, character: Character, documentContext?: string | null, documentFilename?: string | null) => Promise<void>;
+  sendMessage: (text: string, character: Character, documentContext?: string | null, documentFilename?: string | null) => Promise<string | undefined>;
   clearChat: () => void;
   initializeChat: (characterId: string, sessionId?: string) => Promise<void>;
   loadChatSession: (sessionId: string) => Promise<void>;
+  resetChatState: () => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -190,6 +191,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           isLoading: false,
           error: null,
         }));
+
+        return data.sessionId; // Return the sessionId
       } else {
         throw new Error(data.error || 'Failed to get response from API');
       }
@@ -232,6 +235,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }, [currentCharacterId, updateChatState]);
 
+  const resetChatState = useCallback(() => {
+    setChatStates({});
+    setCurrentCharacterId('');
+  }, []);
+
   return (
     <ChatContext.Provider
       value={{
@@ -240,6 +248,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         clearChat,
         initializeChat,
         loadChatSession,
+        resetChatState,
       }}
     >
       {children}

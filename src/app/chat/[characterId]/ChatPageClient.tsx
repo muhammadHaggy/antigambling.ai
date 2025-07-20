@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useChat } from '@/app/_contexts/ChatContext';
 import { characters } from '@/lib/characters';
 import { Character } from '@/lib/types';
@@ -16,7 +16,7 @@ interface ChatPageClientProps {
 }
 
 export default function ChatPageClient({ characterId }: ChatPageClientProps) {
-  const { chatState, sendMessage, initializeChat } = useChat();
+  const { chatState, sendMessage, initializeChat, resetChatState } = useChat();
   const [character, setCharacter] = useState<Character | null>(null);
   const [isVoiceChatActive, setIsVoiceChatActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -24,17 +24,35 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const [documentContext, setDocumentContext] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sessionId = searchParams.get('sessionId');
 
+  // Add effect to handle navigation and cleanup
   useEffect(() => {
-    // Find the character
+    // Reset chat state when component mounts
+    resetChatState();
+
+    // Find the character and initialize chat
     const foundCharacter = characters.find(c => c.id === characterId);
     setCharacter(foundCharacter || null);
     
     if (foundCharacter) {
       initializeChat(characterId, sessionId || undefined);
     }
-  }, [characterId, sessionId, initializeChat]);
+
+    // Reset chat state when unmounting
+    return () => {
+      resetChatState();
+    };
+  }, [characterId, sessionId, initializeChat, resetChatState]);
+
+  // Add effect to handle URL update when sessionId is received
+  useEffect(() => {
+    const currentSessionId = searchParams.get('sessionId');
+    if (chatState.sessionId && !currentSessionId) {
+      router.replace(`/chat/${characterId}?sessionId=${chatState.sessionId}`);
+    }
+  }, [chatState.sessionId, characterId, router, searchParams]);
 
   // Voice chat hook - only initialize if character is found
   const voiceChat = useVoiceChat(character || characters[0]); // Fallback to first character
@@ -60,7 +78,12 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const handleSendMessage = async (text: string) => {
     if (character) {
       // Send the message with document context and filename as separate parameters
-      await sendMessage(text, character, documentContext, uploadedFileName);
+      const newSessionId = await sendMessage(text, character, documentContext, uploadedFileName);
+      
+      // If this is a new chat and we got a sessionId, update the URL
+      if (newSessionId && !searchParams.get('sessionId')) {
+        router.replace(`/chat/${characterId}?sessionId=${newSessionId}`);
+      }
       
       // Clear document context and filename after using it once
       if (documentContext) {
