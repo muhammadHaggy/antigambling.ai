@@ -9,6 +9,7 @@ import ChatHeader from '@/app/_components/ChatHeader';
 import ChatLog from '@/app/_components/ChatLog';
 import MessageInput from '@/app/_components/MessageInput';
 import VoiceCallOverlay from '@/app/_components/VoiceCallOverlay';
+import EndOfSessionSurvey from '@/app/_components/EndOfSessionSurvey';
 import { useVoiceChat } from '@/app/hooks/useVoiceChat';
 
 interface ChatPageClientProps {
@@ -23,6 +24,8 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const [callDuration, setCallDuration] = useState(0);
   const [documentContext, setDocumentContext] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [showEndOfSessionSurvey, setShowEndOfSessionSurvey] = useState(false);
+  const [inactivityTimer, setInactivityTimer] = useState<NodeJS.Timeout | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const sessionId = searchParams.get('sessionId');
@@ -73,10 +76,59 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     };
   }, [isVoiceChatActive, voiceChat.status]);
 
+  // Inactivity timer for end-of-session survey
+  const startInactivityTimer = () => {
+    // Clear existing timer if any
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+    }
+    
+    // Start new timer for 10 minutes (600000ms)
+    // Using 30 seconds for testing purposes - change to 600000 for production
+    const timer = setTimeout(() => {
+      setShowEndOfSessionSurvey(true);
+      setInactivityTimer(null);
+    }, 30000); // 30 seconds for testing (change to 600000 for 10 minutes)
+    
+    setInactivityTimer(timer);
+  };
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+      setInactivityTimer(null);
+    }
+  };
+
+  // Effect to manage inactivity timer based on messages
+  useEffect(() => {
+    const messages = chatState.messages;
+    
+    // Only start timer if we have messages and the last message is from character
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      
+      // Start timer when AI sends a message
+      if (lastMessage.author === 'character' && !chatState.isLoading) {
+        startInactivityTimer();
+      }
+    }
+    
+    // Cleanup timer on unmount
+    return () => {
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+      }
+    };
+  }, [chatState.messages, chatState.isLoading]);
+
   // Greeting is now handled in ChatLog component
 
   const handleSendMessage = async (text: string) => {
     if (character) {
+      // Reset inactivity timer when user sends a message
+      resetInactivityTimer();
+      
       // Send the message with document context and filename as separate parameters
       const newSessionId = await sendMessage(text, character, documentContext, uploadedFileName);
       
@@ -120,6 +172,44 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
   const handleToggleMute = () => {
     setIsMuted(!isMuted);
     // Note: Actual mute functionality would be implemented in the voice chat hook
+  };
+
+  const handleSurveySubmit = async (rating: number) => {
+    if (!chatState.sessionId) {
+      console.error('No session ID available for survey submission');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          feedbackType: 'session_rating',
+          rating,
+          sessionId: chatState.sessionId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit survey');
+      }
+
+      console.log('Survey submitted successfully:', data);
+    } catch (error) {
+      console.error('Error submitting survey:', error);
+      throw error; // Re-throw to let the component handle the error
+    }
+  };
+
+  const handleSurveyClose = () => {
+    setShowEndOfSessionSurvey(false);
+    // Reset the timer so it doesn't show again for this session
+    resetInactivityTimer();
   };
 
   if (!character) {
@@ -178,6 +268,15 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
           onToggleMute={handleToggleMute}
           isMuted={isMuted}
           callDuration={callDuration}
+        />
+      )}
+
+      {/* End of Session Survey */}
+      {showEndOfSessionSurvey && (
+        <EndOfSessionSurvey
+          characterName={character.name}
+          onSubmit={handleSurveySubmit}
+          onClose={handleSurveyClose}
         />
       )}
     </div>
