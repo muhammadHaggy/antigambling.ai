@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Paperclip } from 'lucide-react';
 import MarkdownMessage from './MarkdownMessage';
+import MessageFeedback from './MessageFeedback';
 
 interface MessageBubbleProps {
   author: 'user' | 'character';
@@ -9,6 +10,8 @@ interface MessageBubbleProps {
   characterAvatar?: string;
   isFirst?: boolean;
   documentFilename?: string;
+  messageId?: string;
+  sessionId?: string;
 }
 
 export default function MessageBubble({ 
@@ -17,7 +20,9 @@ export default function MessageBubble({
   timestamp, 
   characterAvatar,
   isFirst = false,
-  documentFilename
+  documentFilename,
+  messageId,
+  sessionId
 }: MessageBubbleProps) {
   const isCharacter = author === 'character';
   
@@ -78,6 +83,14 @@ export default function MessageBubble({
             minute: '2-digit' 
           })}
         </span>
+        
+        {/* Add feedback component for character messages only */}
+        {isCharacter && messageId && (
+          <MessageFeedback 
+            messageId={messageId}
+            sessionId={sessionId}
+          />
+        )}
       </div>
       
       {!isCharacter && (

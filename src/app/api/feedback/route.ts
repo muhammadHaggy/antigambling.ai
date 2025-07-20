@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET endpoint to retrieve feedback (optional, for admin/analytics)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth();
     

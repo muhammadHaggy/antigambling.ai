@@ -147,6 +147,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
           character={character}
           isLoading={chatState.isLoading}
           error={chatState.error}
+          sessionId={chatState.sessionId || undefined}
         />
         
         <div className="flex-shrink-0 border-t border-gray-700 p-4">
