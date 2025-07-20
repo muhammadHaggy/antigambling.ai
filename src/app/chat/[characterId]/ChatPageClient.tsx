@@ -59,8 +59,8 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
 
   const handleSendMessage = async (text: string) => {
     if (character) {
-      // Send the message with document context as a separate parameter
-      await sendMessage(text, character, documentContext);
+      // Send the message with document context and filename as separate parameters
+      await sendMessage(text, character, documentContext, uploadedFileName);
       
       // Clear document context and filename after using it once
       if (documentContext) {

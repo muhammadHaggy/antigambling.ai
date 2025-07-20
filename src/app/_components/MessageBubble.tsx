@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Paperclip } from 'lucide-react';
 import MarkdownMessage from './MarkdownMessage';
 
 interface MessageBubbleProps {
@@ -7,6 +8,7 @@ interface MessageBubbleProps {
   timestamp: Date;
   characterAvatar?: string;
   isFirst?: boolean;
+  documentFilename?: string;
 }
 
 export default function MessageBubble({ 
@@ -14,7 +16,8 @@ export default function MessageBubble({
   text, 
   timestamp, 
   characterAvatar,
-  isFirst = false 
+  isFirst = false,
+  documentFilename
 }: MessageBubbleProps) {
   const isCharacter = author === 'character';
   
@@ -42,6 +45,16 @@ export default function MessageBubble({
               height={150}
               className="rounded-lg mb-2"
             />
+          </div>
+        )}
+        
+        {/* Document indicator for user messages */}
+        {!isCharacter && documentFilename && (
+          <div className="mb-1 px-2 py-1 bg-blue-800/30 border border-blue-700/50 rounded-md flex items-center gap-1.5 max-w-fit">
+            <Paperclip size={12} className="text-blue-400" />
+            <span className="text-xs text-blue-300 truncate max-w-[150px]" title={documentFilename}>
+              {documentFilename}
+            </span>
           </div>
         )}
         
