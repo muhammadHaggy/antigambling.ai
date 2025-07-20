@@ -20,7 +20,7 @@ interface ChatState {
 
 interface ChatContextType {
   chatState: ChatState;
-  sendMessage: (text: string, character: Character) => Promise<void>;
+  sendMessage: (text: string, character: Character, documentContext?: string | null) => Promise<void>;
   clearChat: () => void;
   initializeChat: (characterId: string, sessionId?: string) => Promise<void>;
   loadChatSession: (sessionId: string) => Promise<void>;
@@ -122,7 +122,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   }, [updateChatState, loadChatSession]);
 
-  const sendMessage = useCallback(async (text: string, character: Character) => {
+  const sendMessage = useCallback(async (text: string, character: Character, documentContext?: string | null) => {
     if (!text.trim()) return;
 
     // Check if user is authenticated
@@ -161,6 +161,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           characterId: character.id,
           message: text.trim(),
           sessionId: currentState?.sessionId || undefined,
+          documentContext: documentContext || undefined,
         }),
       });
 

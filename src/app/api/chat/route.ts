@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { characterId, message, sessionId } = body;
+    const { characterId, message, sessionId, documentContext } = body;
 
     // Validate required fields
     if (!characterId || !message) {
@@ -100,10 +100,15 @@ export async function POST(request: NextRequest) {
       parts: [{ text: msg.content }]
     }));
 
-    // Add the new user message
+    // Add the new user message (with document context if provided)
+    let messageWithContext = message;
+    if (documentContext) {
+      messageWithContext = `[CONTEXT FROM UPLOADED DOCUMENT]:\n${documentContext}\n\nUser message: ${message}`;
+    }
+    
     conversationHistory.push({
       role: 'user',
-      parts: [{ text: message }]
+      parts: [{ text: messageWithContext }]
     });
 
     // Create system prompt for the character
@@ -148,7 +153,7 @@ Respond as ${character.name} would, incorporating your personality, background, 
       });
 
       // Send the latest message
-      const result = await chat.sendMessage(message);
+      const result = await chat.sendMessage(messageWithContext);
       const aiResponse = result.response.text();
 
       // Save AI response to database
