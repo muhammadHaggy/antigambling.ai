@@ -91,7 +91,7 @@ function HomeContent() {
             {isSearchMode && searchQuery ? (
               <>Search results for: <span className="text-purple-400">&quot;{searchQuery}&quot;</span></>
             ) : (
-              <>Welcome back, <span className="text-blue-400">
+              <>Selamat datang, <span className="text-blue-400">
                 {session.user?.name || 'User'}
                 </span></>
             )}

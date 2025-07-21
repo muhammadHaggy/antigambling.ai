@@ -141,7 +141,7 @@ export default function WeeklyProgressCheckin({
             disabled={isSubmitting}
             className="flex-1 px-4 py-2.5 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
           >
-            Skip for Now
+            Lewati
           </button>
           <button
             onClick={handleSubmit}
@@ -151,7 +151,7 @@ export default function WeeklyProgressCheckin({
             {isSubmitting ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
-              'Submit Progress'
+              'Kirim'
             )}
           </button>
         </div>
