@@ -87,11 +87,11 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     if (inactivityTimer) {
       clearTimeout(inactivityTimer);
     }
-    // Start new timer for 10 minutes (600000ms)
+    // Start new timer for 5 minutes (300000ms)
     const timer = setTimeout(() => {
       setShowEndOfSessionSurvey(true);
       setInactivityTimer(null);
-    }, 600000); // 10 minutes
+    }, 300000); // 5 minutes
     setInactivityTimer(timer);
   };
 
