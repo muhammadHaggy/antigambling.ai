@@ -144,7 +144,7 @@ export default function MessageInput({
           style={{ display: 'none' }}
         />
         
-        <div className="relative flex items-end gap-3">
+        <div className="relative flex items-center gap-3">
           <div className="flex-1 relative">
             <textarea
               value={message}
@@ -172,7 +172,7 @@ export default function MessageInput({
             type="button"
             onClick={handleFileButtonClick}
             disabled={disabled || isUploadingDocument}
-            className="p-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center"
+            className="h-12 w-12 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
             title="Upload document or image"
           >
             {isUploadingDocument ? (
@@ -186,7 +186,7 @@ export default function MessageInput({
           <button
             type="submit"
             disabled={!message.trim() || disabled || isUploadingDocument}
-            className="p-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center"
+            className="h-12 w-12 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center flex-shrink-0"
           >
             {disabled && !isUploadingDocument ? (
               <div className="w-[18px] h-[18px] border-2 border-white border-t-transparent rounded-full animate-spin" />
