@@ -100,7 +100,7 @@ export default function EndOfSessionSurvey({
         {/* Content */}
         <div className="mb-6">
           <p className="text-gray-300 text-sm mb-4">
-            How would you rate your conversation with {characterName}?
+            Bagaimana Anda menilai percakapan Anda dengan {characterName}?
           </p>
 
           {/* Star Rating */}
