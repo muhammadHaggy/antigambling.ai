@@ -31,32 +31,32 @@ export default function WeeklyProgressCheckin({
   const progressOptions = [
     {
       value: 1,
-      label: 'Much Worse',
-      description: 'My control has significantly decreased',
+      label: 'Jauh Lebih Buruk',
+      description: 'Kendali diri saya menurun secara signifikan',
       color: 'bg-red-600 hover:bg-red-700 border-red-500'
     },
     {
       value: 2,
-      label: 'Worse',
-      description: 'My control has somewhat decreased',
+      label: 'Lebih Buruk',
+      description: 'Kendali diri saya agak menurun',
       color: 'bg-orange-600 hover:bg-orange-700 border-orange-500'
     },
     {
       value: 3,
-      label: 'No Change',
-      description: 'My control level remains the same',
+      label: 'Tidak Ada Perubahan',
+      description: 'Tingkat Kendali diri saya tetap sama',
       color: 'bg-gray-600 hover:bg-gray-700 border-gray-500'
     },
     {
       value: 4,
-      label: 'Better',
-      description: 'My control has somewhat improved',
+      label: 'Lebih Baik',
+      description: 'Kendali diri saya agak membaik',
       color: 'bg-blue-600 hover:bg-blue-700 border-blue-500'
     },
     {
       value: 5,
-      label: 'Much Better',
-      description: 'My control has significantly improved',
+      label: 'Jauh Lebih Baik',
+      description: 'Kendali diri saya membaik secara signifikan',
       color: 'bg-green-600 hover:bg-green-700 border-green-500'
     }
   ];
@@ -91,10 +91,10 @@ export default function WeeklyProgressCheckin({
         {/* Main Question */}
         <div className="mb-6">
           <h3 className="text-base font-semibold text-white mb-2">
-            Over the last week, how would you rate your control over your emotions and reactions?
+            Selama seminggu terakhir, bagaimana Anda menilai kontrol Anda terhadap emosi dan reaksi Anda?
           </h3>
           <p className="text-gray-300 text-sm">
-            This helps us understand your progress and improve your experience.
+            Ini membantu kami memahami perkembangan Anda dan meningkatkan pengalaman Anda.
           </p>
         </div>
 
@@ -159,8 +159,8 @@ export default function WeeklyProgressCheckin({
         {/* Helper Text */}
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
           <p className="text-xs text-gray-400 text-center">
-            Your progress data helps us understand how well our platform is supporting your growth. 
-            This check-in appears once per week and can be skipped if you prefer.
+            Data perkembangan Anda membantu kami memahami seberapa baik platform kami mendukung perkembangan Anda.
+            Pemeriksaan ini muncul sekali setiap minggu dan dapat dilewati jika Anda mau.
           </p>
         </div>
       </div>
