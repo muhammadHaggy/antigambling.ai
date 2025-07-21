@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Home, Search, MessageSquare } from 'lucide-react';
+import Image from 'next/image';
 import LoginButton from './LoginButton';
 import { useSearch } from '@/app/_contexts/SearchContext';
 
@@ -99,7 +100,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Header */}
         <div className="flex-shrink-0 p-4 border-b border-gray-800">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-white">AntiGambling.ai</h1>
+            <div className="flex items-center gap-3">
+              <Image
+                src="/images/logo.png"
+                alt="AntiGambling.ai Logo"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
+              <h1 className="text-xl font-bold text-white">AntiGambling.ai</h1>
+            </div>
           </div>
         </div>
 
