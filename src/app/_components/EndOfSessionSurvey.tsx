@@ -58,20 +58,20 @@ export default function EndOfSessionSurvey({
 
   const getRatingText = (rating: number) => {
     switch (rating) {
-      case 1: return 'Very Poor';
-      case 2: return 'Poor';
-      case 3: return 'Average';
-      case 4: return 'Good';
-      case 5: return 'Excellent';
-      default: return 'Select a rating';
+      case 1: return 'Sangat Buruk';
+      case 2: return 'Buruk';
+      case 3: return 'Biasa Saja';
+      case 4: return 'Baik';
+      case 5: return 'Sangat Baik';
+      default: return 'Pilih penilaian';
     }
   };
 
   const getFollowUpQuestion = (rating: number) => {
     if (rating >= 4) {
-      return 'What did you like most? (Optional)';
+      return 'Apa yang paling Anda sukai? (Opsional)';
     } else if (rating <= 2) {
-      return 'What was confusing or unclear? (Optional)';
+      return 'Apa yang membingungkan atau kurang jelas? (Opsional)';
     }
     return '';
   };
@@ -142,7 +142,7 @@ export default function EndOfSessionSurvey({
               <textarea
                 value={textComment}
                 onChange={(e) => setTextComment(e.target.value)}
-                placeholder="Share your thoughts..."
+                placeholder="Bagikan pendapat Anda..."
                 disabled={isSubmitting}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none disabled:opacity-50 disabled:cursor-not-allowed"
                 rows={3}
@@ -179,7 +179,7 @@ export default function EndOfSessionSurvey({
 
         {/* Helper Text */}
         <p className="text-xs text-gray-500 text-center mt-3">
-          Your feedback helps us improve the conversation experience
+          Pendapat Anda membantu kami meningkatkan pengalaman pengguna
         </p>
       </div>
     </div>
