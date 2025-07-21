@@ -97,14 +97,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         }`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-gray-800">
+        <div className="flex-shrink-0 p-4 border-b border-gray-800">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-white">AntiGambling.ai</h1>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4">
+        {/* Navigation - Scrollable */}
+        <nav className="flex-1 p-4 overflow-y-auto min-h-0">
           <ul className="space-y-2">
             <NavItem
               icon={<Home size={18} />}
@@ -115,7 +115,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             />
             <NavItem
               icon={<Search size={18} />}
-              text="Cari Karakter"
+              text="Cari Nama Karakter"
               onClick={() => {
                 handleSearchClick();
                 onClose();
@@ -132,8 +132,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </ul>
         </nav>
 
-        {/* Authentication Section */}
-        <div className="p-4 border-t border-gray-800">
+        {/* Authentication Section - Sticky at bottom */}
+        <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-gray-900">
           <LoginButton />
           
           <div className="flex gap-4 mt-3 text-xs text-gray-500">
