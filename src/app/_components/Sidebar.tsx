@@ -108,14 +108,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <ul className="space-y-2">
             <NavItem
               icon={<Home size={18} />}
-              text="Discover"
+              text="Pilih Karakter"
               href="/"
               isActive={pathname === '/'}
               onClick={onClose}
             />
             <NavItem
               icon={<Search size={18} />}
-              text="Search"
+              text="Cari Karakter"
               onClick={() => {
                 handleSearchClick();
                 onClose();
@@ -124,7 +124,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             />
             <NavItem
               icon={<MessageSquare size={18} />}
-              text="Chats"
+              text="Chat History"
               href="/chats"
               isActive={pathname.startsWith('/chat')}
               onClick={onClose}
