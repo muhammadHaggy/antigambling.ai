@@ -50,11 +50,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (10MB limit)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (2MB limit)
+    const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { success: false, error: 'File too large. Please upload a file smaller than 10MB.' },
+        { success: false, error: 'File too large. Please upload a file smaller than 2MB.' },
         { status: 400 }
       );
     }
@@ -68,14 +68,20 @@ export async function POST(request: NextRequest) {
       const fileBase64 = buffer.toString('base64');
 
       // Prepare the prompt for document analysis
-      const analysisPrompt = `Briefly summarize the key points of this document. This summary will be used as context for a chat conversation. 
+      const analysisPrompt = `Kamu adalah konsultan keuangan profesional kelas dunia. Tugasmu adalah menganalisis data mutasi rekening dan memberikan penjelasan yang sangat detail, jelas, dan mudah dipahami oleh orang awam. Jangan gunakan istilah keuangan yang rumit, jangan gunakan emoji, dan jangan gunakan efek penulisan seperti bold, italic, underline, atau format khusus lainnya.
 
-Please provide:
-1. Main topics or themes covered
-2. Key facts, data, or information presented
-3. Important conclusions or recommendations
+Gunakan format output berikut, dan isi setiap bagian dengan narasi yang ramah, membangun, dan komunikatif:
 
-Keep the summary concise but comprehensive enough to serve as useful context for answering questions about this document.`;
+1. Ringkasan Keuangan:
+Tuliskan ringkasan keuangan dalam bentuk cerita narasi. Jelaskan dari mana saja sumber pemasukan terbesar, ke mana saja pengeluaran terbanyak, dan apa artinya bagi kondisi keuangan user. Jika ada transaksi di e-commerce seperti Shopee, Tokopedia, Traveloka, Bukalapak, Lazada, Blibli, dan lainnya, sebutkan secara spesifik: berapa kali transaksi dilakukan di masing-masing platform, dan total nominalnya. Jika ada transaksi yang sering terjadi di kategori tertentu (misal: transportasi, makanan, hiburan), sebutkan juga jumlah dan totalnya.
+
+2. Metrik Utama:
+Jelaskan angka-angka penting seperti total pemasukan, total pengeluaran, selisih, dan pengeluaran terbesar, semuanya dalam bentuk kalimat narasi. Jika ditemukan hutang atau penggunaan paylater, pinjaman online, atau kartu kredit (misal: Shopee Paylater, Kredivo, Akulaku, Gopay Pinjam, OVO Paylater, dsb), analisis secara detail: sebutkan jumlah transaksi, total nominal, dan frekuensi penggunaannya. Jelaskan juga jika ada pola top-up dompet digital (Gopay, OVO, Dana, Shopeepay, dsb): berapa kali top-up dilakukan ke masing-masing platform, dan total nominalnya. Jika ada transaksi transfer antar bank atau ke rekening lain, sebutkan juga jumlah dan totalnya.
+
+3. Insight:
+Berikan saran atau insight yang membangun dan actionable, misalnya tips mengelola hutang, mengatur pengeluaran e-commerce, atau strategi meningkatkan tabungan. Jika ada pola pengeluaran yang kurang sehat, berikan peringatan dan solusi konkrit. Sampaikan dengan bahasa yang profesional, tegas, namun tetap ramah dan memotivasi.
+
+Pastikan seluruh output hanya berupa paragraf narasi, tidak ada tabel, list, emoji, atau efek penulisan apapun. Gunakan bahasa Indonesia yang profesional, komunikatif, dan mudah dipahami.`;
 
       // Use Gemini's multimodal capabilities
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });

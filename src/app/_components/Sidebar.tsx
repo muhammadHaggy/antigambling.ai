@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Search, MessageSquare } from 'lucide-react';
+import { Home, Search, MessageSquare, DollarSign } from 'lucide-react';
 import LoginButton from './LoginButton';
 import { useSearch } from '@/app/_contexts/SearchContext';
 
@@ -127,6 +127,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               text="Chat History"
               href="/chats"
               isActive={pathname.startsWith('/chat')}
+              onClick={onClose}
+            />
+            <NavItem
+              icon={<DollarSign size={18} />}
+              text="Konsultasi Finansial"
+              href="/konsultasi-finansial"
+              isActive={pathname.startsWith('/konsultasi-finansial')}
               onClick={onClose}
             />
           </ul>
