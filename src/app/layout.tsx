@@ -19,6 +19,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AntiGambling.ai",
   description: "A tool to help you stay away from gambling",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/images/logo.png", type: "image/png" }
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({
