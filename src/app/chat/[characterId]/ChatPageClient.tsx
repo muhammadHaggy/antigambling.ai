@@ -50,9 +50,13 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
     // Reset chat state when unmounting
     return () => {
       resetChatState();
-      resetInactivityTimer();
+      // Clean up inactivity timer on unmount
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+        setInactivityTimer(null);
+      }
     };
-  }, [characterId, sessionId, initializeChat, resetChatState]);
+  }, [characterId, sessionId, initializeChat, resetChatState, inactivityTimer]);
 
   // Add effect to handle URL update when sessionId is received
   useEffect(() => {
@@ -119,7 +123,7 @@ export default function ChatPageClient({ characterId }: ChatPageClientProps) {
         clearTimeout(inactivityTimer);
       }
     };
-  }, [chatState.messages, chatState.isLoading]);
+  }, [chatState.messages, chatState.isLoading, inactivityTimer, startInactivityTimer]);
 
   // Greeting is now handled in ChatLog component
 

@@ -16,15 +16,12 @@ interface ReportTemplateProps {
 }
 
 export default function ReportTemplate({
-  nama,
-  tanggal,
   ringkasanKeuangan,
   ringkasanKeuanganBullet,
   metrikUtama,
   metrikUtamaBullet,
   insight,
   insightBullet,
-  catatanTambahan,
   totalPemasukan,
   totalPengeluaran,
 }: ReportTemplateProps) {

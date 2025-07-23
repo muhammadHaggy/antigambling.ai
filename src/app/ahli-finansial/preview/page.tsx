@@ -50,13 +50,10 @@ export default function Component() {
     insight: "",
     catatanTambahan: "",
   });
-  const [rawGemini, setRawGemini] = useState<string>("");
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const summary = localStorage.getItem("finansialSummary");
       if (summary) {
-        setRawGemini(summary);
         const parsed = parseGeminiSections(summary);
         const isAllEmpty = !parsed.ringkasanKeuangan.narasi && !parsed.metrikUtama.narasi && !parsed.insight.narasi;
         setDocumentData({
