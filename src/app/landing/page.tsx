@@ -68,7 +68,7 @@ export default function LandingPage() {
           <>
             <div className="absolute top-6 right-6">
               <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                STEP 1
+                LANGKAH 1
               </div>
             </div>
             <div className="mt-8 space-y-6">
@@ -91,10 +91,10 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Choose Your AI Companion
+                  Pilih Pendamping AI Anda
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Select from our diverse characters - each specialized in different aspects of recovery support
+                  Pilih dari karakter kami yang beragam - masing-masing ahli dalam aspek dukungan pemulihan yang berbeda
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg">
@@ -125,7 +125,7 @@ export default function LandingPage() {
           <>
             <div className="absolute top-6 right-6">
               <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                STEP 2
+                LANGKAH 2
               </div>
             </div>
             <div className="mt-8 space-y-6">
@@ -136,10 +136,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Start Free Consultation
+                  Mulai Konsultasi Gratis
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Begin your confidential conversation with AI-powered psychological counseling
+                  Mulai percakapan rahasia Anda dengan konseling psikologis berbasis AI
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg">
@@ -178,7 +178,7 @@ export default function LandingPage() {
           <>
             <div className="absolute top-6 right-6">
               <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                STEP 3
+                LANGKAH 3
               </div>
             </div>
             <div className="mt-8 space-y-6">
@@ -189,10 +189,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Financial Recovery Plan
+                  Rencana Pemulihan Finansial
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Get structured financial analysis and personalized recovery strategies
+                  Dapatkan analisis keuangan terstruktur dan strategi pemulihan yang dipersonalisasi
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg">
@@ -224,7 +224,7 @@ export default function LandingPage() {
           <>
             <div className="absolute top-6 right-6">
               <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                STEP 4
+                LANGKAH 4
               </div>
             </div>
             <div className="mt-8 space-y-6">
@@ -235,10 +235,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Continuous Support
+                  Dukungan Berkelanjutan
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Receive ongoing psychological well-being support and long-term recovery guidance
+                  Dapatkan dukungan kesejahteraan psikologis dan bimbingan pemulihan jangka panjang
                 </p>
               </div>
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg">
@@ -318,13 +318,13 @@ export default function LandingPage() {
 
             {/* Description with slide-in animation */}
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8 animate-slide-in-left stagger-2">
-              AI-powered chatbot for psychological counseling, financial education, and financial analysis for individuals affected by online gambling addiction. Non-judgmental, educational, and character-based approach.
+              Chatbot bertenaga AI untuk konseling psikologis, edukasi keuangan, dan analisis keuangan bagi individu yang terdampak kecanduan judi online. Pendekatan edukatif, tanpa menghakimi, dan berbasis karakter yang berdasarkan kisah nyata.
             </p>
 
             {/* Character Grid in Hero Section */}
             <div className="mb-8 animate-fade-in-up stagger-3" id="character-selection">
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                Choose your trusted companion:
+                Pilih pendamping kepercayaan Anda:
               </p>
               <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4 max-w-5xl mx-auto">
                 {characters.map((character, index) => {
@@ -378,7 +378,7 @@ export default function LandingPage() {
                 onClick={handleStartConsultation}
                 className="group relative inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-full shadow-2xl hover-lift hover-glow overflow-hidden"
               >
-                <span className="relative z-10">Start Free Consultation</span>
+                <span className="relative z-10">Mulai Konsultasi Gratis</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-white/20 rounded-full animate-bounce-gentle"></div>
               </button>
@@ -415,11 +415,11 @@ export default function LandingPage() {
               </div>
               <h2 className="text-4xl sm:text-6xl font-black text-gray-900 dark:text-white mb-6 animate-text-reveal">
                 <span className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
-                  Problem Identification
+                  Identifikasi Masalah
                 </span>
               </h2>
               <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto animate-text-reveal stagger-1">
-                Understanding the critical challenges that individuals face with online gambling addiction and the gaps in current support systems.
+                Memahami tantangan kritis yang dihadapi individu dengan kecanduan judi online dan celah dalam sistem dukungan saat ini.
               </p>
             </div>
 
@@ -433,10 +433,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-red-600 transition-colors animate-text-reveal">
-                  Unstoppable Online Gambling Prevalence
+                  Prevalensi Judi Online yang Tak Terbendung
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  The widespread availability and accessibility of online gambling platforms make it extremely difficult for individuals to break free from addiction cycles.
+                  Ketersediaan dan aksesibilitas platform judi online yang sangat luas membuat individu yang sulit untuk keluar dari siklus kecanduan.
                 </p>
                 {/* Floating particles */}
                 <div className="absolute top-4 right-4 w-2 h-2 bg-red-400 rounded-full animate-sparkle"></div>
@@ -451,10 +451,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-orange-600 transition-colors animate-text-reveal">
-                  Severe Negative Consequences
+                  Konsekuensi Negatif yang Berat
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  High rates of suicide, theft, and domestic violence (KDRT) cases directly linked to online gambling addiction, affecting individuals and families.
+                  Tingginya angka bunuh diri, pencurian, dan kasus kekerasan dalam rumah tangga (KDRT) yang langsung terkait dengan kecanduan judi online, berdampak pada individu dan keluarga.
                 </p>
                 <div className="absolute top-4 right-4 w-2 h-2 bg-orange-400 rounded-full animate-sparkle"></div>
                 <div className="absolute bottom-4 left-4 w-3 h-3 bg-orange-400 rounded-full animate-sparkle" style={{animationDelay: '1s'}}></div>
@@ -468,10 +468,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-yellow-600 transition-colors animate-text-reveal">
-                  Loss Chasing Behavior
+                  Perilaku Mengejar Kekalahan
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  Individuals with financial awareness continue gambling in hopes of recovering losses, a behavior recognized by the American Psychiatric Association as Gambling Disorder.
+                  Individu yang sadar finansial tetap berjudi dengan harapan menutup kerugian, perilaku yang diakui oleh Asosiasi Psikiatri Amerika sebagai Gangguan Judi.
                 </p>
                 <div className="absolute top-4 right-4 w-2 h-2 bg-yellow-400 rounded-full animate-sparkle"></div>
                 <div className="absolute bottom-4 left-4 w-3 h-3 bg-yellow-400 rounded-full animate-sparkle" style={{animationDelay: '1s'}}></div>
@@ -485,10 +485,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 transition-colors animate-text-reveal">
-                  Limited Digital Recovery Tools
+                  Minimnya Alat Pemulihan Digital
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  Lack of specialized digital tools designed specifically for financial and psychological recovery from gambling addiction.
+                  Kurangnya alat digital khusus yang dirancang untuk pemulihan keuangan dan psikologis dari kecanduan judi.
                 </p>
                 <div className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full animate-sparkle"></div>
                 <div className="absolute bottom-4 left-4 w-3 h-3 bg-blue-400 rounded-full animate-sparkle" style={{animationDelay: '1s'}}></div>
@@ -502,10 +502,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-purple-600 transition-colors animate-text-reveal">
-                  Stigma and Lack of Safe Spaces
+                  Stigma dan Kurangnya Ruang Aman
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  Many victims feel ashamed and lack access to safe, judgment-free environments where they can seek help without fear of stigma.
+                  Banyak korban merasa malu dan tidak memiliki akses ke lingkungan yang aman dan bebas stigma untuk mencari bantuan.
                 </p>
                 <div className="absolute top-4 right-4 w-2 h-2 bg-purple-400 rounded-full animate-sparkle"></div>
                 <div className="absolute bottom-4 left-4 w-3 h-3 bg-purple-400 rounded-full animate-sparkle" style={{animationDelay: '1s'}}></div>
@@ -519,10 +519,10 @@ export default function LandingPage() {
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-green-600 transition-colors animate-text-reveal">
-                  Psychological Disorder Recognition
+                  Pengakuan Gangguan Psikologis
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed animate-text-reveal stagger-1">
-                  The American Psychiatric Association officially recognizes gambling addiction as a psychological disorder, highlighting the need for professional intervention.
+                  Asosiasi Psikiatri Amerika secara resmi mengakui kecanduan judi sebagai gangguan psikologis, menegaskan perlunya intervensi profesional.
                 </p>
                 <div className="absolute top-4 right-4 w-2 h-2 bg-green-400 rounded-full animate-sparkle"></div>
                 <div className="absolute bottom-4 left-4 w-3 h-3 bg-green-400 rounded-full animate-sparkle" style={{animationDelay: '1s'}}></div>
@@ -578,10 +578,10 @@ export default function LandingPage() {
                 {/* Content */}
                 <div className="relative z-10">
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    Konseling Gratis AI
+                    Konseling AI Gratis
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                    Layanan konseling psikologis dan dukungan perubahan perilaku secara gratis melalui chatbot berbasis AI, dirancang khusus untuk membantu individu yang mengalami kecanduan judi online.
+                    Layanan konseling psikologis dan dukungan perubahan perilaku gratis melalui chatbot AI, dirancang khusus untuk membantu individu yang mengalami kecanduan judi online.
                   </p>
                 </div>
                 
@@ -702,7 +702,7 @@ export default function LandingPage() {
                     Sistem Umpan Balik
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                    Fitur umpan balik langsung untuk partisipasi pengguna dan kontrol etika, memastikan continuous improvement berbasis masukan nyata dari pengguna.
+                    Fitur umpan balik langsung untuk partisipasi pengguna dan kontrol etika, memastikan perbaikan berkelanjutan berbasis masukan nyata dari pengguna.
                   </p>
                 </div>
                 
@@ -763,7 +763,7 @@ export default function LandingPage() {
                     Karakter Mantan Pelaku
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                    Chatbot dengan karakter mantan pelaku judi yang telah pulih, memberikan inspirasi dan harapan melalui lived experience sebagai mentor pemulihan.
+                    Chatbot dengan karakter mantan pelaku judi yang telah pulih, memberikan inspirasi dan harapan melalui pengalaman nyata sebagai mentor pemulihan.
                   </p>
                 </div>
                 
@@ -822,11 +822,11 @@ export default function LandingPage() {
               </div>
               <h2 className="text-4xl sm:text-6xl font-black text-gray-900 dark:text-white mb-6">
                 <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  How It Works
+                  Bagaimana Cara Kerjanya
                 </span>
               </h2>
               <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-                Simple steps to start your recovery journey with AI-powered support
+                Langkah mudah untuk memulai perjalanan pemulihan Anda dengan dukungan berbasis AI
               </p>
             </div>
 
@@ -859,10 +859,10 @@ export default function LandingPage() {
                           ? 'text-blue-600 dark:text-blue-400' 
                           : 'text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
                       }`}>
-                        Choose Your Companion
+                        Pilih Pendamping Anda
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        Select from our diverse AI characters - each with unique expertise in psychological support, financial guidance, or recovery mentorship.
+                        Pilih dari karakter AI kami yang beragam - masing-masing dengan keahlian unik dalam dukungan psikologis, bimbingan keuangan, atau mentor pemulihan.
                       </p>
                     </div>
                   </div>
@@ -893,10 +893,10 @@ export default function LandingPage() {
                           ? 'text-green-600 dark:text-green-400' 
                           : 'text-gray-900 dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400'
                       }`}>
-                        Start Free Consultation
+                        Mulai Konsultasi Gratis
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        Begin your confidential conversation with AI-powered psychological counseling and behavioral change support, available 24/7.
+                        Mulai percakapan rahasia Anda dengan konseling psikologis dan dukungan perubahan perilaku berbasis AI, tersedia 24/7.
                       </p>
                     </div>
                   </div>
@@ -927,10 +927,10 @@ export default function LandingPage() {
                           ? 'text-purple-600 dark:text-purple-400' 
                           : 'text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400'
                       }`}>
-                        Financial Recovery Plan
+                        Rencana Pemulihan Finansial
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        Get structured financial analysis, identify harmful spending patterns, and receive personalized recovery strategies.
+                        Dapatkan analisis keuangan terstruktur, identifikasi pola konsumsi merugikan, dan terima strategi pemulihan yang dipersonalisasi.
                       </p>
                     </div>
                   </div>
@@ -961,10 +961,10 @@ export default function LandingPage() {
                           ? 'text-orange-600 dark:text-orange-400' 
                           : 'text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400'
                       }`}>
-                        Continuous Support
+                        Dukungan Berkelanjutan
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                        Receive ongoing psychological well-being support and long-term recovery guidance
+                        Dapatkan dukungan kesejahteraan psikologis dan bimbingan pemulihan jangka panjang.
                       </p>
                     </div>
                   </div>
@@ -1014,10 +1014,10 @@ export default function LandingPage() {
             lineHeight: 1.1,
             display: 'inline-block',
             animation: 'gradientShift 3s ease-in-out infinite alternate'
-          }}>Our Team</h2>
+          }}>Tim Kami</h2>
           {/* Subtitle */}
           <div style={{ fontSize: 22, color: '#e0e7ef', marginBottom: 48, fontWeight: 400 }}>
-            Meet the creators behind this project
+            Kenali engineer di balik proyek ini
           </div>
           {/* Cards */}
           <div style={{
@@ -1079,78 +1079,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Contact Us Section */}
-        <section style={{
-          maxWidth: 1200,
-          margin: '64px auto 0 auto',
-          padding: '56px 24px',
-          borderRadius: 32,
-          background: 'linear-gradient(90deg, #232946 0%, #6366f1 100%)',
-          boxShadow: '0 8px 48px 0 rgba(80, 80, 180, 0.10)',
-          textAlign: 'center',
-          color: '#fff',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{ fontWeight: 700, letterSpacing: 2, fontSize: 16, opacity: 0.85, marginBottom: 16 }}>
-            CONTACT US
-          </div>
-          <div style={{ fontWeight: 900, fontSize: 40, marginBottom: 18, lineHeight: 1.15 }}>
-            Ready to Start Your Recovery Journey?
-          </div>
-          <div style={{ fontSize: 20, opacity: 0.92, marginBottom: 40, fontWeight: 400 }}>
-            Join the growing community using AntiGambling.AI to reclaim financial and mental well-being.
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24, flexWrap: 'wrap' }}>
-            <a href="#" style={{
-              background: '#fff',
-              color: '#7c3aed',
-              fontWeight: 700,
-              fontSize: 18,
-              borderRadius: 999,
-              padding: '16px 36px',
-              textDecoration: 'none',
-              boxShadow: '0 2px 12px 0 rgba(80, 80, 180, 0.08)',
-              transition: 'background 0.2s, color 0.2s',
-              border: 'none',
-              display: 'inline-block'
-            }}
-            onMouseOver={e => { e.currentTarget.style.background = '#ede9fe'; e.currentTarget.style.color = '#6d28d9'; }}
-            onMouseOut={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#7c3aed'; }}
-            >
-              Try the Demo
-            </a>
-            <a href="#" style={{
-              background: 'transparent',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: 18,
-              borderRadius: 999,
-              padding: '16px 36px',
-              textDecoration: 'none',
-              border: '2px solid #fff',
-              display: 'inline-block',
-              transition: 'background 0.2s, color 0.2s'
-            }}
-            onMouseOver={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.color = '#7c3aed'; }}
-            onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#fff'; }}
-            >
-              Contact Our Team
-            </a>
-          </div>
-          <div style={{
-            position: 'absolute',
-            top: -40,
-            left: 0,
-            right: 0,
-            height: 80,
-            background: 'linear-gradient(180deg, #181e29 0%, transparent 100%)',
-            zIndex: 1,
-            borderTopLeftRadius: 32,
-            borderTopRightRadius: 32,
-            pointerEvents: 'none'
-          }} />
-        </section>
       </div>
       <style jsx global>{`
         @keyframes gradientShift {
