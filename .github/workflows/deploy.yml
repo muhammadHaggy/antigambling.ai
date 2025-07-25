@@ -1,0 +1,32 @@
+name: Deploy to Ubuntu Server
+
+on:
+  workflow_dispatch: # Allows manual triggering from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add SSH host key (Optional but recommended for security)
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 22212 157.20.32.162 >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        run: |
+          ssh -p 22212 ubuntu@157.20.32.162 << 'EOF'
+            cd antigambling.ai/
+            git pull
+            docker compose up --build -d
+            # Optional: Add any other commands you need to run after deployment
+            # For example, checking docker logs or status
+          EOF
