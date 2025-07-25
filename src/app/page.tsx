@@ -72,6 +72,14 @@ function HomeContent() {
             </p>
           </div>
           <LoginButton />
+          <div className="mt-6">
+            <a 
+              href="/landing" 
+              className="text-blue-400 hover:text-blue-300 underline text-sm"
+            >
+              Pelajari lebih lanjut tentang AntiGambling.AI
+            </a>
+          </div>
         </div>
       </div>
     );
@@ -91,83 +99,52 @@ function HomeContent() {
             {isSearchMode && searchQuery ? (
               <>Search results for: <span className="text-purple-400">&quot;{searchQuery}&quot;</span></>
             ) : (
-              <>Selamat datang, <span className="text-blue-400">
-                {session.user?.name || 'User'}
-                </span></>
+              <>Selamat datang, <span className="text-blue-400">{session?.user?.name || session?.user?.email}</span>!</>
             )}
           </h1>
           
-          {/* Search Bar */}
           <SearchBar onSearch={handleSearchChange} />
         </div>
 
-        {/* Search Results or Character Sections */}
-        {isSearchMode ? (
-          <div className="space-y-6">
-            {searchResults.length > 0 ? (
-              <>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-white">
-                    {searchResults.length} character{searchResults.length !== 1 ? 's' : ''} found
-                  </h2>
-                  <button
-                    onClick={() => {
-                      clearSearch();
-                      setIsSearchMode(false);
-                      window.history.pushState({}, '', '/');
-                    }}
-                    className="text-purple-400 hover:text-purple-300 text-sm transition-colors"
-                  >
-                    Clear search
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {searchResults.map((character) => (
-                    <CharacterCard 
-                      key={character.id}
-                      id={character.id}
-                      name={character.name}
-                      creator={character.creator}
-                      description={character.description}
-                      avatar={character.avatar}
-                      interactions={character.interactions}
-                    />
-                  ))}
-                </div>
-              </>
+        {/* Characters Display */}
+        {isSearchMode && searchQuery ? (
+          // Search results view
+          <div>
+            {displayCharacters.length > 0 ? (
+              <div className="grid gap-4 md:gap-6">
+                                 {displayCharacters.map((character) => (
+                   <CharacterCard 
+                     key={character.id} 
+                     id={character.id}
+                     name={character.name}
+                     creator={character.creator}
+                     description={character.description}
+                     avatar={character.avatar}
+                     interactions={character.interactions}
+                   />
+                 ))}
+              </div>
             ) : (
               <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <svg className="mx-auto h-12 w-12 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-white mb-2">No characters found</h3>
-                <p className="text-gray-400 mb-4">
-                  Try adjusting your search terms or browse all characters below.
-                </p>
-                <button
-                  onClick={() => {
-                    clearSearch();
-                    setIsSearchMode(false);
-                    window.history.pushState({}, '', '/');
-                  }}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                >
-                  Browse All Characters
-                </button>
+                <p className="text-gray-400 text-lg">No characters found matching your search.</p>
               </div>
             )}
           </div>
         ) : (
-          <div className="space-y-8">
-            <CharacterSection title="Dengarkan Kesaksian Korban Judi Online" characters={victimCharacters} />
-            {expertCharacters.length > 0 && (
-              <CharacterSection title="Konsultasi dengan Ahli" characters={expertCharacters} />
-            )}
-            {religiousCharacters.length > 0 && (
-              <CharacterSection title="Konsultasi dengan Tokoh Agama" characters={religiousCharacters} />
-            )}
+          // Default sectioned view
+          <div className="flex flex-col gap-8">
+            <CharacterSection
+              title="Mantan Korban Judi"
+              characters={victimCharacters}
+            />
+            <CharacterSection
+              title="Ahli Finansial & Psikolog"
+              characters={expertCharacters}
+            />
+            <CharacterSection
+              title="Tokoh Agama"
+              characters={religiousCharacters}
+            />
           </div>
         )}
       </div>

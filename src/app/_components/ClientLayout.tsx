@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 import Sidebar from './Sidebar';
 import WeeklyProgressCheckin from './WeeklyProgressCheckin';
 import { useWeeklyCheckin } from '../hooks/useWeeklyCheckin';
@@ -14,11 +15,24 @@ interface ClientLayoutProps {
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname();
   const { 
     showWeeklyCheckin, 
     updateLastCheckinDate, 
     closeWeeklyCheckin 
   } = useWeeklyCheckin();
+
+  // Check if we're on the landing page
+  const isLandingPage = pathname === '/landing';
+
+  // If on landing page, render without sidebar
+  if (isLandingPage) {
+    return (
+      <div className="w-full h-full">
+        {children}
+      </div>
+    );
+  }
 
   const handleWeeklyCheckinSubmit = async (rating: number) => {
     if (!session?.user) {
